@@ -50,7 +50,7 @@ p { margin: 0; }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; white-space: nowrap; }
 .brand-mark { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
 .brand small { font: 400 12px var(--font-mono); color: var(--text-3); }
-.top nav { justify-self: center; min-width: 0; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
+.top nav { justify-self: center; min-width: 0; max-width: 100%; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
 .top nav a { color: var(--text-2); text-decoration: none; font-size: 13.5px; padding: 6px 13px; border-radius: 999px; white-space: nowrap; }
 .top nav a:hover, .top nav a.on { color: var(--text); background: var(--surface-3); }
 .top-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
@@ -240,7 +240,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <div>
         <p class="eyebrow">Instituto Leonardo Murialdo · Ciclo 2026</p>
         <h1 style="margin-top:10px">Campus en vivo</h1>
-        <p id="headSub">Siete nodos IoT reportando al servidor central por MQTT.</p>
+        <p id="headSub">Ocho nodos IoT en dos plantas reportando al servidor central por MQTT.</p>
       </div>
       <span class="live"><span class="dot"></span><b>BROKER CONECTADO</b><span id="lastMsg" class="num">último mensaje hace 0 s</span></span>
     </div>
@@ -272,7 +272,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <section class="row-2" id="alertas">
     <div class="panel" data-n>
       <span class="anat">5</span>
-      <div class="panel-h"><h2>Temperatura por sector · últimas 24 h</h2><span>una celda por hora</span></div>
+      <div class="panel-h"><h2>Temperatura por nodo · últimas 24 h</h2><span>una celda por hora</span></div>
       <div class="heat-wrap"><div class="heat" id="heat"></div></div>
       <div class="heat-scale"><span>14 °C</span><i style="background:linear-gradient(90deg,#1b2a44,#2b5a7a,#4a9a8c,#d9b45a,#fb923c,#f87171)"></i><span>32 °C</span><span style="display:inline-flex;align-items:center;gap:6px"><b style="display:inline-block;width:14px;height:10px;border-radius:2px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 3px,var(--surface) 3px 6px)"></b>sin datos</span></div>
     </div>
@@ -299,7 +299,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <li><strong>Mapa: dónde pasa</strong><span>Plano simple de la escuela con cada nodo en su sector, coloreado por estado y unido al servidor (topología en estrella).</span></li>
       <li><strong>Semáforo por sector</strong><span>La misma información en lista, ordenada de peor a mejor, con palabra e ícono además del color.</span></li>
       <li><strong>Tarjetas con acceso</strong><span>Valor actual, tendencia, temperatura y humedad, hace cuánto llegó el dato y el botón al dashboard del equipo.</span></li>
-      <li><strong>Comparar en el tiempo</strong><span>Un mapa de calor muestra 7 sectores × 24 horas en un solo vistazo. Los huecos rayados son horas sin datos.</span></li>
+      <li><strong>Comparar en el tiempo</strong><span>Un mapa de calor muestra cada nodo × 24 horas en un solo vistazo. Los huecos rayados son horas sin datos.</span></li>
       <li><strong>Alertas en vivo</strong><span>Lo más nuevo arriba, con sector, motivo y hora. También avisa cuando una alerta se resuelve.</span></li>
       <li><strong>Equipos y accesos</strong><span>Quién construyó cada nodo y dónde están su dashboard, su documentación y su código.</span></li>
     </ol>
@@ -361,9 +361,11 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
       serie: (h, r) => 3 + (enClase(h) ? 5 : 0) + 30 * bump(h, 10.5, .9) + 9 * bump(h, 14.5, 1) + r() * 2 },
     luz:       { equipo: 2, nombre: "Luminosidad", sector: "Aula 1", corto: "Aula 1", slug: "aula-1", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 270, y: 362, piso: 0, tOff: 0,
       serie: (h, r) => Math.max(0, 140 * Math.sin((h - 6) * Math.PI / 13)) + (enClase(h) ? 330 : 0) + r() * 25 },
-    presencia: { equipo: 3, nombre: "Presencia", sector: "Lab. de Informática 3", corto: "Info 3 · presencia", slug: "lab-info-3", sensor: "PIR HC-SR501", variable: "Detecciones", unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", x: 550, y: 92, piso: 1, tOff: .6,
+    presencia: { equipo: 3, nombre: "Presencia", sector: "Lab. de Informática 3", corto: "Info 3 · presencia", slug: "lab-info-3", sensor: "PIR HC-SR501", variable: "Detecciones", unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", x: 500, y: 92, piso: 1, tOff: .6,
       serie: (h, r) => enClase(h) ? 22 + r() * 22 : (h === 21 ? 4 : 0) },
-    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Lab. de Informática 3", corto: "Info 3 · consumo", slug: "lab-info-3", piso: 1, sensor: "SCT-013", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, x: 690, y: 92, tOff: 3.4, offline: true,
+    luz3:      { equipo: 3, base: "luz", nombre: "Luminosidad", sector: "Lab. de Informática 3", corto: "Info 3 · luz", slug: "lab-info-3", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 600, y: 92, piso: 1, tOff: .6,
+      serie: (h, r) => (enClase(h) ? 420 + r() * 60 : 0) + Math.max(0, 60 * Math.sin((h - 6) * Math.PI / 13)) + (h === 21 ? 380 : 0) },
+    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Lab. de Informática 3", corto: "Info 3 · consumo", slug: "lab-info-3", piso: 1, sensor: "SCT-013", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, x: 700, y: 92, tOff: 3.4, offline: true,
       serie: (h, r) => 160 + (enClase(h) ? 1100 + r() * 300 : r() * 40) + 1250 * bump(h, 14, .5) },
     ruido:     { equipo: 5, nombre: "Nivel sonoro", sector: "Hall central", corto: "Hall central", slug: "hall-central", sensor: "KY-037", variable: "Ruido", unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, x: 395, y: 212, piso: 0, tOff: -.8,
       serie: (h, r) => 36 + (enClase(h) ? 14 : 0) + 22 * bump(h, 10, .35) + 20 * bump(h, 12.5, .4) + 18 * bump(h, 15, .35) + r() * 4 },
@@ -372,7 +374,7 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
     red:       { equipo: 7, nombre: "Estado de red", sector: "Sala de servidores", corto: "Servidores", slug: "servidores", sensor: "ESP32 (ping + RSSI)", variable: "Latencia", unidad: "ms", icon: "red", color: "var(--c-red)", hex: "#2dd4bf", min: 0, max: 250, dec: 0, tipo: "max", u: { a: 50, b: 150 }, x: 72, y: 92, piso: 1, tOff: 1.2,
       serie: (h, r) => 14 + r() * 10 + (enClase(h) ? 12 : 0) + 95 * bump(h, 11, .4) + 170 * bump(h, 15, .3) }
   };
-  const ORDEN = ["aire", "luz", "presencia", "consumo", "ruido", "suelo", "red"];
+  const ORDEN = ["aire", "luz", "presencia", "luz3", "consumo", "ruido", "suelo", "red"];
   const NIVEL = [{ k: "ok", t: "Normal", i: "ok" }, { k: "warn", t: "Atención", i: "warn" }, { k: "bad", t: "Alerta", i: "bad" }];
 
   function estado(n, v, h) {
@@ -470,7 +472,7 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
     let p1 = `<svg viewBox="0 0 960 250" role="img" aria-label="Primer piso con el estado de cada nodo">`;
     p1 += `<rect x="20" y="20" width="750" height="220" rx="16" fill="none" stroke="var(--border)" stroke-width="2"/>`;
     p1 += server(30, 30, 160, 135);
-    p1 += room(200, 30, 130, 135, "LAB. INFO 1", { note: "sin nodo" }) + room(340, 30, 130, 135, "LAB. INFO 2", { note: "sin nodo" }) + room(480, 30, 280, 135, "LABORATORIO DE INFORMÁTICA 3");
+    p1 += room(200, 30, 110, 135, "LAB. INFO 1", { note: "sin nodo" }) + room(320, 30, 110, 135, "LAB. INFO 2", { note: "sin nodo" }) + room(440, 30, 320, 135, "LABORATORIO DE INFORMÁTICA 3");
     p1 += room(30, 178, 730, 52, "", { fill: "var(--surface)" }) + T(395, 209, "PASILLO", { mid: true });
     del(1).forEach(k => { p1 += link(NODOS[k], SRV); });
     p1 += `<line x1="${R1.x}" y1="${R1.y}" x2="${SRV.x}" y2="${SRV.y}" stroke="var(--border-strong)" stroke-dasharray="4 4" stroke-width="1.3"/>`;
@@ -502,9 +504,9 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
         <div class="nc-top"><span class="ib">${icon(n.icon)}</span><div style="min-width:0"><h3>${esc(n.nombre)}</h3><p>${esc(n.sector)} · ${esc(n.sensor)}</p></div><span class="team-tag">Equipo ${n.equipo}</span></div>
         <div class="nc-mid"><div class="nc-val${n.tipo === "presencia" && !n.offline ? " txt" : ""}">${valHtml}</div>${spark(d.main.slice(n.offline ? -16 : -12, n.offline ? -4 : undefined), n.offline ? "#6c7890" : n.hex)}</div>
         <div class="nc-env"><span><span class="t">${icon("temp", "ic-sm")}</span>${n.offline ? "--" : fmt(d.temp[23], 1)} °C</span><span><span class="h">${icon("hum", "ic-sm")}</span>${n.offline ? "--" : fmt(d.hum[23], 0)} %</span></div>
-        <div class="nc-foot"><span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pill(lvl, lvl >= 0 ? textoEstado(n, lvl, val(k)) : null)}<span class="ago" data-ago="${k}">${agoTxt(d.ago)}</span></span><a class="btn go" href="index.html#dashboard" data-open="${k}">Abrir dashboard ${icon("arrow", "ic-sm")}</a></div>
+        <div class="nc-foot"><span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pill(lvl, lvl >= 0 ? textoEstado(n, lvl, val(k)) : null)}<span class="ago" data-ago="${k}">${agoTxt(d.ago)}</span></span><a class="btn go" href="index.html#dashboard" data-open="${n.base || k}">Abrir dashboard ${icon("arrow", "ic-sm")}</a></div>
       </article>`;
-    }).join("") + `<div class="ncard add"><span class="ib">+</span><strong>Nuevo nodo</strong><span>Cuando un equipo suma un nodo y publica en <code>campus/+/+/telemetria</code>, aparece acá solo.</span></div>`;
+    }).join("");
   }
 
   function heatColor(t) {
@@ -558,16 +560,20 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
   })();
 
   function renderTeams() {
-    $("#teams").innerHTML = `<thead><tr><th>Equipo</th><th>Nodo</th><th>Sector</th><th>Estado del nodo</th><th>Publicación</th><th>Accesos</th></tr></thead><tbody>` + ORDEN.map(k => {
-      const n = NODOS[k], lvl = nivelDe(k);
-      const pub = n.equipo % 3 === 0 ? `<span class="pill warn">${icon("warn", "ic-sm")}En desarrollo</span>` : `<span class="pill ok">${icon("ok", "ic-sm")}Publicado</span>`;
+    const equipos = [...new Set(ORDEN.map(k => NODOS[k].equipo))].sort((x, y) => x - y);
+    const peor = ks => ks.map(nivelDe).reduce((m, l) => (l < 0 ? 1.5 : l) > (m < 0 ? 1.5 : m) ? l : m, 0);
+    $("#teams").innerHTML = `<thead><tr><th>Equipo</th><th>Nodo</th><th>Sector</th><th>Estado</th><th>Publicación</th><th>Accesos</th></tr></thead><tbody>` + equipos.map(eq => {
+      const ks = ORDEN.filter(k => NODOS[k].equipo === eq), n = NODOS[ks[0]], lvl = peor(ks);
+      const kp = ks[0];
+      const pub = eq % 3 === 0 ? `<span class="pill warn">${icon("warn", "ic-sm")}En desarrollo</span>` : `<span class="pill ok">${icon("ok", "ic-sm")}Publicado</span>`;
+      const ref = ks.find(k => nivelDe(k) === lvl) || kp;
       return `<tr style="--c:${n.color}">
-        <td><div class="who"><span class="ib">${icon(n.icon, "ic-sm")}</span><div><b>Equipo ${n.equipo}</b><span>4 integrantes · 6to Informática</span></div></div></td>
-        <td>${esc(n.nombre)}<br><span style="font-size:12.5px;color:var(--text-3)">${esc(n.sensor)}</span></td>
+        <td><div class="who"><span class="ib">${icon(n.icon, "ic-sm")}</span><div><b>Equipo ${eq}</b><span>4 integrantes · 6to Informática</span></div></div></td>
+        <td>${ks.map(k => esc(NODOS[k].nombre)).join(" + ")}<br><span style="font-size:12.5px;color:var(--text-3)">${ks.map(k => esc(NODOS[k].sensor)).join(" + ")}</span></td>
         <td>${esc(n.sector)}</td>
-        <td>${pill(lvl, lvl >= 0 ? textoEstado(n, lvl, val(k)) : null)}</td>
+        <td>${pill(lvl, lvl >= 0 ? textoEstado(NODOS[ref], lvl, val(ref)) : null)}</td>
         <td>${pub}</td>
-        <td><div class="links"><a class="btn go" href="index.html#dashboard" data-open="${k}">${icon("chart", "ic-sm")}Dashboard</a><a class="btn" href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">${icon("doc", "ic-sm")}Documentación</a><a class="btn" href="https://github.com/lpedaci/sexto-proyecto2026" target="_blank" rel="noopener">${icon("code", "ic-sm")}Código</a></div></td>
+        <td><div class="links"><a class="btn go" href="index.html#dashboard" data-open="${n.base || kp}">${icon("chart", "ic-sm")}Dashboard</a><a class="btn" href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">${icon("doc", "ic-sm")}Documentación</a><a class="btn" href="https://github.com/lpedaci/sexto-proyecto2026" target="_blank" rel="noopener">${icon("code", "ic-sm")}Código</a></div></td>
       </tr>`;
     }).join("") + "</tbody>";
   }

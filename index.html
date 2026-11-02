@@ -88,12 +88,10 @@ code { overflow-wrap: anywhere; font-size: .88em; background: var(--surface-2); 
 .brand { justify-self: start; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 700; font-stretch: 90%; letter-spacing: .01em; white-space: nowrap; }
 .brand-mark { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
 .brand small { font-family: var(--font-mono); font-weight: 400; color: var(--text-3); font-size: 12px; margin-left: 4px; }
-.top nav { justify-self: center; min-width: 0; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
+.top nav { justify-self: center; min-width: 0; max-width: 100%; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
 .top nav a { color: var(--text-2); text-decoration: none; font-size: 13.5px; padding: 6px 14px; border-radius: 999px; white-space: nowrap; transition: background .15s, color .15s; }
 .top nav a:hover, .top nav a.on { color: var(--text); background: var(--surface-3); }
-.top-cta { justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--text); color: var(--bg); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-.top-cta:hover { background: var(--accent); color: var(--accent-ink); }
-@media (max-width: 900px) { .top .wrap { grid-template-columns: auto minmax(0, 1fr); } .top-cta { display: none; } .top nav { justify-self: end; } .brand small { display: none; } }
+@media (max-width: 900px) { .top .wrap { grid-template-columns: auto minmax(0, 1fr); } .top nav { justify-self: end; } .brand small { display: none; } }
 @media (max-width: 560px) { .brand .bt { display: none; } .top nav a.opt { display: none; } .top nav a { padding: 6px 11px; } }
 
 /* ---------- Tipografía ---------- */
@@ -544,7 +542,6 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
       <a href="tablero-general.html">Tablero general</a>
       <a class="opt" href="#control">Control final</a>
     </nav>
-    <a class="top-cta" href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">Plantilla de la profe <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </div>
 </header>
 
@@ -793,7 +790,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
       <div class="sec-head">
         <span class="route-label"><b>A+</b> Tablero central · Módulo 4</span>
         <h2>La landing que reúne a todos los nodos</h2>
-        <p class="lead">Además del dashboard de cada equipo, el proyecto tiene un tablero central institucional: la página de entrada donde se ven los siete nodos juntos y en tiempo real, con el estado de cada sector, las alertas, los equipos y el acceso a cada dashboard. Armamos una maqueta de referencia completa, en una web aparte, para que vean cómo tiene que quedar.</p>
+        <p class="lead">Además del dashboard de cada equipo, el proyecto tiene un tablero central institucional: la página de entrada donde se ven todos los nodos juntos y en tiempo real, con el estado de cada sector, las alertas, los equipos y el acceso a cada dashboard. Armamos una maqueta de referencia completa, en una web aparte, para que vean cómo tiene que quedar.</p>
       </div>
       <div class="tg">
         <a class="tg-prev" href="tablero-general.html" aria-label="Abrir la maqueta del tablero general">
@@ -820,7 +817,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
             <li><b>Mapa de la escuela.</b> Cada nodo en su sector, coloreado por estado y unido al servidor.</li>
             <li><b>Semáforo por sector.</b> Ordenado de peor a mejor, con palabra e ícono.</li>
             <li><b>Tarjetas de nodo.</b> Valor, tendencia, hace cuánto llegó el dato y botón al dashboard del equipo.</li>
-            <li><b>Comparación en el tiempo.</b> Mapa de calor de 7 sectores × 24 horas.</li>
+            <li><b>Comparación en el tiempo.</b> Mapa de calor de cada nodo × 24 horas.</li>
             <li><b>Alertas en vivo.</b> Lo más nuevo arriba, incluidas las que se resuelven.</li>
             <li><b>Equipos y accesos.</b> Dashboard, documentación y código de cada equipo.</li>
           </ol>
