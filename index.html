@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orientación Proyecto IoT</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Guía para 6to año: cómo diseñar el dashboard en tema oscuro de cada nodo IoT y cómo armar la documentación del proyecto con la plantilla de la profe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: consola de instrumentos. Una columna de lectura (max 1180px) con bandas por ruta:
+   A = dashboard (demo en vivo arriba), B = documentación (bifurcación Sí/No). Solo tema oscuro, a propósito. */
+:root {
+  /* Neutros con sesgo azul (pizarra nocturna) */
+  --bg: #0a0e15;
+  --surface: #111824;
+  --surface-2: #172131;
+  --surface-3: #1e2a3d;
+  --border: #233047;
+  --border-strong: #31415c;
+  --text: #e5eaf2;
+  --text-2: #9ba7bb;
+  --text-3: #6c7890;
+
+  /* Acento único: bordó rosado de la plantilla (identidad Info A en oscuro) */
+  --accent: #ec8494;
+  --accent-ink: #1a0c12;
+  --accent-soft: rgba(236, 132, 148, .12);
+
+  /* Semánticos del semáforo (no son acento) */
+  --ok: #4ade80;   --ok-soft: rgba(74, 222, 128, .12);
+  --warn: #fbbf24; --warn-soft: rgba(251, 191, 36, .13);
+  --bad: #f87171;  --bad-soft: rgba(248, 113, 113, .13);
+
+  /* Categóricos por variable sensada (datos, no decoración) */
+  --c-temp: #fb923c; --c-hum: #38bdf8; --c-aire: #a3e635; --c-luz: #fde68a;
+  --c-ruido: #c084fc; --c-presencia: #f472b6; --c-consumo: #818cf8;
+  --c-suelo: #d4a373; --c-red: #2dd4bf;
+
+  --code-bg: #070a10;
+
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --r-sm: 6px; --r: 10px; --r-lg: 16px;
+  --header-h: 60px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 16px/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg); }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--text); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+code, kbd, pre { font-family: var(--font-mono); }
+code { overflow-wrap: anywhere; font-size: .88em; background: var(--surface-2); border: 1px solid var(--border); padding: .08em .38em; border-radius: 5px; color: var(--text); }
+
+.wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.ic { width: 20px; height: 20px; flex: none; }
+.ic-sm { width: 16px; height: 16px; flex: none; }
+.ic-lg { width: 26px; height: 26px; flex: none; }
+
+/* ---------- Encabezado ---------- */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  background: rgba(10, 14, 21, .86); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.top .wrap { height: var(--header-h); display: flex; align-items: center; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 700; font-stretch: 90%; letter-spacing: .01em; white-space: nowrap; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
+.brand small { font-family: var(--font-mono); font-weight: 400; color: var(--text-3); font-size: 12px; margin-left: 4px; }
+.top nav { margin-left: auto; min-width: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.top nav a { color: var(--text-2); text-decoration: none; font-size: 14px; padding: 6px 10px; border-radius: 8px; white-space: nowrap; }
+.top nav a:hover { color: var(--text); background: var(--surface-2); }
+@media (max-width: 720px) { .brand small { display: none; } .top nav a.opt { display: none; } }
+
+/* ---------- Tipografía ---------- */
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.1rem, 5.2vw, 3.6rem); font-weight: 800; font-stretch: 82%; line-height: 1.02; letter-spacing: -.01em; }
+h2 { font-size: clamp(1.6rem, 3.2vw, 2.25rem); font-weight: 750; font-stretch: 85%; line-height: 1.1; }
+h3 { font-size: 1.15rem; font-weight: 700; font-stretch: 95%; line-height: 1.25; }
+p { margin: 0; }
+.lead { font-size: 1.12rem; color: var(--text-2); max-width: 62ch; }
+.muted { color: var(--text-2); }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
+.eyebrow b { color: var(--accent); font-weight: 500; }
+.prose { display: grid; gap: 14px; max-width: 68ch; }
+.prose ul, .prose ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+/* ---------- Hero ---------- */
+.hero { padding-block: 56px 40px; border-bottom: 1px solid var(--border); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 28px; } }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lead { margin-top: 18px; }
+.routes { display: grid; gap: 12px; }
+.route {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface);
+  text-decoration: none; color: var(--text); transition: border-color .15s, background .15s;
+}
+.route:hover { border-color: var(--accent); background: var(--surface-2); color: var(--text); }
+.route .tag { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.route strong { display: block; font-family: var(--font-display); font-size: 1.15rem; font-stretch: 92%; }
+.route span.d { color: var(--text-2); font-size: 14px; }
+.route .ico { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+.flow { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-2); }
+.flow span { padding: 4px 9px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
+.flow i { font-style: normal; color: var(--text-3); }
+
+/* ---------- Secciones ---------- */
+.band { padding-block: 64px; border-bottom: 1px solid var(--border); }
+.band.alt { background: linear-gradient(180deg, var(--surface) 0, var(--bg) 340px); }
+.sec-head { display: grid; gap: 12px; margin-bottom: 28px; max-width: 760px; }
+.sub { margin-top: 48px; display: grid; gap: 18px; }
+.sub > * { min-width: 0; }
+.sub > header { display: grid; gap: 6px; }
+.sub > header p { color: var(--text-2); max-width: 68ch; }
+.route-label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); width: max-content; }
+.route-label b { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 1px 8px; font-weight: 600; }
+
+/* ---------- Selector de nodo ---------- */
+.picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px 8px 10px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+  border-radius: 999px; font: 500 14px var(--font-body); cursor: pointer; transition: all .15s;
+}
+.chip:hover { border-color: var(--border-strong); color: var(--text); }
+.chip .dot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c); }
+.chip[aria-pressed="true"] { border-color: var(--c); color: var(--text); background: color-mix(in srgb, var(--c) 10%, var(--surface)); }
+.picker-note { font-size: 14px; color: var(--text-2); }
+
+/* ---------- Demo de dashboard ---------- */
+.demo-shell { border: 1px solid var(--border-strong); border-radius: 18px; background: #080b11; padding: 10px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.7); }
+.demo-bar { display: flex; align-items: center; gap: 10px; padding: 4px 6px 10px; flex-wrap: wrap; }
+.demo-bar .lights { display: flex; gap: 6px; }
+.demo-bar .lights i { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+.demo-bar .url { flex: 1; min-width: 160px; font-family: var(--font-mono); font-size: 12px; color: var(--text-3); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 9px;
+  border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--text);
+  font: 500 14px var(--font-body); cursor: pointer; text-decoration: none; transition: background .15s, border-color .15s;
+}
+.btn:hover { background: var(--surface-3); color: var(--text); }
+.btn.sm { padding: 5px 10px; font-size: 13px; border-radius: 8px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.btn.primary:hover { background: #f29dab; color: var(--accent-ink); }
+.btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+.dash { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr); background: var(--bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.dash-side { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 0; }
+.dash-side .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; margin-bottom: 10px; }
+.dash-side span { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; color: var(--text-3); }
+.dash-side span.on { background: var(--surface-3); color: var(--text); }
+.dash-main { padding: 18px; display: grid; gap: 14px; min-width: 0; }
+@media (max-width: 640px) { .dash { grid-template-columns: 1fr; } .dash-side { display: none; } .dash-main { padding: 12px; } }
+
+.d-head { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.d-title { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.d-title .big-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c); flex: none; }
+.d-title h3 { font-size: 1.25rem; }
+.d-title p { font-size: 13px; color: var(--text-2); }
+.d-meta { margin-left: auto; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.mute { background: var(--surface-2); color: var(--text-2); }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 0 currentColor; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); } 70% { box-shadow: 0 0 0 7px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+
+.offline-banner { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: var(--bad-soft); color: var(--bad); font-size: 14px; border: 1px solid rgba(248,113,113,.3); }
+.offline-banner b { color: var(--text); font-weight: 600; }
+
+.kpis { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .kpis { grid-template-columns: 1fr; } }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.kpi.main { border-color: color-mix(in srgb, var(--c) 45%, var(--border)); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 9%, var(--surface)) 0, var(--surface) 70%); }
+.kpi-top { display: flex; align-items: center; gap: 10px; }
+.kpi-ico { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); flex: none; }
+.kpi-name { font-size: 13px; color: var(--text-2); line-height: 1.25; }
+.kpi-name small { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.kpi-top .pill { margin-left: auto; }
+.kpi-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.kpi-val { font-family: var(--font-display); font-stretch: 88%; font-weight: 700; font-size: 2.1rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi-val small { font-family: var(--font-body); font-size: .95rem; font-weight: 500; color: var(--text-2); margin-left: 4px; }
+.kpi-delta { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.kpi svg.spark { width: 110px; height: 34px; }
+.is-off .kpi-val, .is-off .gauge-val { color: var(--text-3); }
+
+.d-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+@media (max-width: 900px) { .d-grid { grid-template-columns: 1fr; } }
+.panel { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.panel-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.panel-h h4 { margin: 0; font-size: 14px; font-weight: 600; }
+.panel-h span { font-size: 12px; color: var(--text-3); }
+.chart svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--text-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.side-col { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.gauge { display: grid; justify-items: center; gap: 4px; }
+.gauge > svg { width: 100%; max-width: 240px; height: auto; }
+.gauge-val { font-family: var(--font-display); font-stretch: 88%; font-weight: 700; font-size: 1.9rem; line-height: 1; margin-top: -54px; font-variant-numeric: tabular-nums; }
+.gauge-unit { font-size: 12px; color: var(--text-2); }
+.gauge .pill { margin-top: 6px; }
+.alerts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.alerts li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-size: 13px; padding: 8px 10px; border-radius: 9px; background: var(--surface-2); }
+.alerts li .t { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.alerts li.warn .ic-sm { color: var(--warn); }
+.alerts li.bad .ic-sm { color: var(--bad); }
+.alerts .empty { grid-template-columns: auto 1fr; color: var(--text-2); }
+.alerts .empty .ic-sm { color: var(--ok); }
+.health { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 760px) { .health { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.health div { background: var(--surface-2); border-radius: 9px; padding: 10px 12px; min-width: 0; }
+.health dt { font-size: 11.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+.health dd { margin: 2px 0 0; font-family: var(--font-mono); font-size: 13px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+
+/* Marcadores de anatomía */
+.anat { position: absolute; z-index: 3; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 700 12px/24px var(--font-mono); text-align: center; box-shadow: 0 0 0 4px rgba(236,132,148,.25); display: none; }
+.show-anat .anat { display: block; }
+.show-anat [data-anat] { outline: 1.5px dashed rgba(236,132,148,.55); outline-offset: 3px; }
+
+.anat-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: a; list-style: none; padding: 0; margin: 0; }
+@media (max-width: 900px) { .anat-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .anat-list { grid-template-columns: 1fr; } }
+.anat-list li { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); }
+.anat-list li::before { counter-increment: a; content: counter(a); grid-row: span 2; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); display: grid; place-items: center; font: 600 12px var(--font-mono); }
+.anat-list strong { font-size: 15px; }
+.anat-list span { font-size: 14px; color: var(--text-2); }
+
+/* ---------- Tablas ---------- */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); font-weight: 500; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.caption { font-size: 13px; color: var(--text-3); }
+
+/* ---------- Reglas de diseño ---------- */
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .rules { grid-template-columns: 1fr; } }
+.rule { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); }
+.rule .ico { width: 34px; height: 34px; border-radius: 9px; background: var(--surface-3); color: var(--text); display: grid; place-items: center; }
+.rule h3 { font-size: 1rem; margin-bottom: 4px; }
+.rule p { font-size: 14px; color: var(--text-2); }
+.compare { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.compare span { font-size: 12px; padding: 4px 10px; border-radius: 7px; }
+
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.sw { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.sw i { display: block; height: 44px; }
+.sw div { padding: 8px 10px; font-size: 12.5px; display: grid; }
+.sw code { background: none; border: 0; padding: 0; color: var(--text-2); font-size: 12px; }
+
+/* ---------- Iconos ---------- */
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.icon-card { display: grid; justify-items: start; gap: 10px; padding: 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); }
+.icon-card .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); }
+.icon-card strong { font-size: 14px; }
+.icon-card span { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+
+/* ---------- Código y pestañas ---------- */
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--text-2); font: 500 14px var(--font-body); padding: 10px 12px; cursor: pointer; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--text); border-color: var(--accent); }
+.code { position: relative; background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; min-width: 0; }
+.code pre { margin: 0; padding: 18px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: #d6deeb; }
+.code .copy { position: absolute; top: 10px; right: 10px; }
+.code .k { color: #c792ea; } .code .s { color: #addb67; } .code .c { color: #637777; font-style: italic; } .code .n { color: #f78c6c; }
+.code-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 12px; color: var(--text-3); flex-wrap: wrap; }
+.code-head .copy { position: static; }
+
+.options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .options { grid-template-columns: 1fr; } }
+.opt-card { padding: 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); display: grid; gap: 8px; align-content: start; }
+.opt-card .badge { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); }
+.opt-card p { font-size: 14px; color: var(--text-2); }
+.opt-card ul { margin: 0; padding-left: 1.1em; font-size: 14px; color: var(--text-2); display: grid; gap: 4px; }
+
+/* ---------- Prompt ---------- */
+.prompt-box { border: 1px solid var(--border-strong); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.prompt-box .code-head { background: var(--surface-2); }
+.prompt-box textarea {
+  display: block; width: 100%; min-height: 320px; resize: vertical; border: 0; outline: 0;
+  background: var(--code-bg); color: #d6deeb; padding: 16px 18px; font: 13.5px/1.65 var(--font-mono);
+}
+.prompt-box textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 14px; border-bottom: 1px solid var(--border); }
+@media (max-width: 760px) { .fields { grid-template-columns: 1fr; } }
+.fields label { display: grid; gap: 4px; font-size: 12.5px; color: var(--text-2); }
+.fields input, .fields select { background: var(--bg); color: var(--text); border: 1px solid var(--border-strong); border-radius: 8px; padding: 8px 10px; font: 14px var(--font-body); min-width: 0; }
+.toast { font-size: 13px; color: var(--ok); }
+
+/* ---------- Bifurcación documentación ---------- */
+.fork { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .fork { grid-template-columns: 1fr; } }
+.fork button {
+  text-align: left; padding: 18px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  cursor: pointer; display: grid; gap: 6px; font: inherit; transition: border-color .15s, background .15s;
+}
+.fork button:hover { border-color: var(--border-strong); }
+.fork button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.fork .q { font-family: var(--font-mono); font-size: 12px; color: var(--text-3); }
+.fork strong { font-family: var(--font-display); font-size: 1.3rem; font-stretch: 90%; }
+.fork span.d { color: var(--text-2); font-size: 14px; }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: st; }
+.steps > li { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; padding-bottom: 22px; }
+.steps > li::before { counter-increment: st; content: counter(st); width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); color: var(--text); display: grid; place-items: center; font: 600 13px var(--font-mono); position: relative; z-index: 1; }
+.steps > li::after { content: ""; position: absolute; left: 15.5px; top: 34px; bottom: 2px; width: 1px; background: var(--border-strong); }
+.steps > li:last-child::after { display: none; }
+.steps h3 { font-size: 1.05rem; margin: 4px 0 6px; }
+.steps p, .steps li li { color: var(--text-2); font-size: 15px; }
+.steps .inner { display: grid; gap: 10px; min-width: 0; }
+.steps ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+
+.callout { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(251,191,36,.35); background: var(--warn-soft); font-size: 14.5px; }
+.callout .ic { color: var(--warn); margin-top: 2px; }
+.callout.info { border-color: var(--border-strong); background: var(--surface-2); }
+.callout.info .ic { color: var(--accent); }
+
+/* Mapa de la plantilla */
+.map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1000px) { .map { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .map { grid-template-columns: 1fr; } }
+.map-col { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); overflow: hidden; display: grid; align-content: start; }
+.map-col h3 { font-size: .95rem; padding: 12px 14px; background: var(--surface-2); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; }
+.map-col h3 span { font-family: var(--font-mono); font-weight: 400; font-size: 12px; color: var(--text-3); }
+.map-col details { border-bottom: 1px solid var(--border); }
+.map-col details:last-child { border-bottom: 0; }
+.map-col summary { cursor: pointer; padding: 10px 14px; display: grid; grid-template-columns: 28px 1fr auto; gap: 6px; align-items: baseline; font-size: 14px; list-style: none; }
+.map-col summary::-webkit-details-marker { display: none; }
+.map-col summary .n { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.map-col summary::after { content: "+"; color: var(--text-3); font-family: var(--font-mono); }
+.map-col details[open] summary::after { content: "−"; }
+.map-col .body { padding: 0 14px 12px 48px; font-size: 13.5px; color: var(--text-2); display: grid; gap: 6px; }
+.map-col .body b { color: var(--text); font-weight: 500; }
+
+/* Checklists */
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .checks { grid-template-columns: 1fr; } }
+.checklist { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.checklist header { padding: 14px 16px; display: grid; gap: 8px; border-bottom: 1px solid var(--border); }
+.checklist header div { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.bar { height: 6px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s; }
+.count { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-2); }
+.checklist ul { list-style: none; margin: 0; padding: 6px 0; }
+.checklist label { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 9px 16px; cursor: pointer; font-size: 14.5px; }
+.checklist label:hover { background: var(--surface-2); }
+.checklist input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--ok); }
+.checklist input:checked + span { color: var(--text-3); text-decoration: line-through; text-decoration-color: var(--text-3); }
+.checklist footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+
+/* Referencias */
+.refs { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; max-width: 80ch; }
+.refs li { padding-left: 2em; text-indent: -2em; color: var(--text-2); font-size: 15px; overflow-wrap: anywhere; }
+.refs i { color: var(--text); }
+
+footer.site { padding-block: 32px 48px; color: var(--text-3); font-size: 13.5px; }
+footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio">
+      <span class="brand-mark"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></svg></span>
+      Orientación IoT <small>6to · 2026</small>
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#documentacion">Documentación</a>
+      <a class="opt" href="#control">Control final</a>
+      <a class="opt" href="#referencias">Referencias</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <!-- ======================= HERO ======================= -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow"><b>Proyecto institucional</b> Smart Campus IoT · 6to año</p>
+        <h1 style="margin-top:14px">Del sensor al tablero,<br>y del tablero <em>a la carpeta.</em></h1>
+        <p class="lead">Esta guía tiene dos rutas. La primera muestra cómo diseñar el dashboard en tema oscuro del nodo que le tocó a tu equipo. La segunda explica cómo armar la documentación con la plantilla de la profe, partiendo de lo que ya tienen escrito.</p>
+      </div>
+      <div class="routes">
+        <a class="route" href="#dashboard">
+          <span class="ico" id="heroIcoA"></span>
+          <span><span class="tag">Ruta A</span><strong>Armar el dashboard</strong><span class="d">Demo en vivo por sensor, anatomía, paleta oscura, íconos y conexión MQTT.</span></span>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="route" href="#documentacion">
+          <span class="ico" id="heroIcoB"></span>
+          <span><span class="tag">Ruta B</span><strong>Armar la documentación</strong><span class="d">Si ya tienen documentos, Claude arma la web con la plantilla. Si no, el paso a paso.</span></span>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="flow" aria-label="Recorrido del dato">
+        <span>Sensor</span><i>→</i><span>ESP32</span><i>→</i><span>WiFi</span><i>→</i><span>Broker MQTT</span><i>→</i><span>Backend / BD</span><i>→</i><span style="border-color:var(--accent);color:var(--accent)">Dashboard</span><i>→</i><span>Documentación</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= RUTA A ======================= -->
+  <section class="band alt" id="dashboard">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route-label"><b>A</b> Ruta dashboard</span>
+        <h2>Un tablero que se entiende de un vistazo</h2>
+        <p class="lead">Elegí el nodo de tu equipo. El tablero de abajo cambia de sensor, de colores, de umbrales y de gráfico. Los datos son simulados y se actualizan cada pocos segundos, igual que llegarían por MQTT.</p>
+      </div>
+
+      <div class="picker" id="picker" role="group" aria-label="Elegí tu nodo"></div>
+      <p class="picker-note" id="pickerNote" style="margin-top:10px"></p>
+
+      <!-- Demo -->
+      <div class="demo-shell" style="margin-top:20px">
+        <div class="demo-bar">
+          <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="url" id="demoUrl">equipo.github.io/dashboard</span>
+          <button class="btn sm" id="btnAnat" aria-pressed="false" type="button">Ver anatomía</button>
+          <button class="btn sm" id="btnOff" aria-pressed="false" type="button">Simular desconexión</button>
+        </div>
+        <div class="dash" id="dash" aria-live="off">
+          <aside class="dash-side" aria-hidden="true" id="dashSide"></aside>
+          <div class="dash-main">
+            <div class="d-head" data-anat>
+              <span class="anat" style="left:-8px;top:-8px">1</span>
+              <div class="d-title"><span class="big-ico" id="dIco"></span><div><h3 id="dTitle">Nodo</h3><p id="dSub">Lugar</p></div></div>
+              <div class="d-meta" id="dMeta"></div>
+            </div>
+            <div class="offline-banner" id="offBanner" hidden>
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 4.2-2.9M10 5.1A15 15 0 0 1 22 8.8M5 12.5a10 10 0 0 1 3.5-2.2M15.5 10.2A10 10 0 0 1 19 12.5M8.5 16a5 5 0 0 1 7 0M3 3l18 18"/></svg>
+              <span><b>Nodo desconectado.</b> Sin datos hace 6 min. Los valores que ves son los últimos recibidos, no los actuales.</span>
+            </div>
+            <div class="kpis" id="kpis" data-anat><span class="anat" style="left:-8px;top:-8px">2</span></div>
+            <div class="d-grid">
+              <div class="side-col">
+              <div class="panel" data-anat>
+                <span class="anat" style="left:-8px;top:-8px">4</span>
+                <div class="panel-h"><h4 id="chartTitle">Histórico 24 h</h4><span id="chartSub"></span></div>
+                <div class="chart" id="chart"></div>
+                <div class="legend" id="chartLegend"></div>
+              </div>
+              <div class="panel" data-anat>
+                <span class="anat" style="left:-8px;top:-8px">6</span>
+                <div class="panel-h"><h4>Salud del nodo</h4><span id="healthSub"></span></div>
+                <dl class="health" id="health" style="margin:0"></dl>
+              </div>
+              </div>
+              <div class="side-col">
+                <div class="panel" data-anat>
+                  <span class="anat" style="left:-8px;top:-8px">3</span>
+                  <div class="panel-h"><h4>Semáforo</h4><span id="gaugeSub"></span></div>
+                  <div class="gauge" id="gauge"></div>
+                </div>
+                <div class="panel" data-anat>
+                  <span class="anat" style="left:-8px;top:-8px">5</span>
+                  <div class="panel-h"><h4>Alertas</h4><span>últimas 24 h</span></div>
+                  <ul class="alerts" id="alerts"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anatomía -->
+      <div class="sub" id="anatomia">
+        <header>
+          <p class="eyebrow"><b>A.1</b> Anatomía</p>
+          <h2>Seis piezas, en este orden de lectura</h2>
+          <p>Se lee de arriba hacia abajo y de lo general a lo particular: primero el estado, después el número, después la historia. Así lo recomienda Few (2013) para tableros de monitoreo. Tocá <b>Ver anatomía</b> en la demo para ubicar cada pieza.</p>
+        </header>
+        <ol class="anat-list">
+          <li><strong>Encabezado con estado</strong><span>Nombre del nodo, sector, sensor y un indicador "En línea" con la hora del último dato. Es lo primero que se mira.</span></li>
+          <li><strong>Tarjetas de indicadores</strong><span>Una por variable: ícono, nombre, valor grande, unidad, mini tendencia y comparación con hace 1 hora. Temperatura y humedad (DHT22) van siempre; tu sensor va destacado.</span></li>
+          <li><strong>Semáforo</strong><span>Medidor con las zonas Normal, Atención y Alerta pintadas a escala. El color siempre va con texto e ícono.</span></li>
+          <li><strong>Histórico</strong><span>Gráfico de las últimas 24 horas con las franjas de umbral de fondo, grilla suave y el último punto resaltado.</span></li>
+          <li><strong>Alertas</strong><span>Lista corta con hora, nivel y motivo. Si no hay alertas, se dice: un panel vacío sin mensaje parece un error.</span></li>
+          <li><strong>Salud del nodo</strong><span>Señal WiFi (RSSI), tiempo encendido, mensajes por minuto y tópico MQTT. Ayuda a distinguir "no pasa nada" de "no llegan datos".</span></li>
+        </ol>
+      </div>
+
+      <!-- Umbrales -->
+      <div class="sub" id="umbrales">
+        <header>
+          <p class="eyebrow"><b>A.2</b> Umbrales</p>
+          <h2>El semáforo de tu nodo</h2>
+          <p>Estos son los valores que usa la demo. Los de temperatura, humedad, CO y ruido coinciden con el apartado 13 de la plantilla. Son valores de referencia escolares: en la documentación cada equipo tiene que justificar sus umbrales definitivos con fuentes citadas en APA 7.</p>
+        </header>
+        <div class="table-wrap"><table id="tablaUmbrales"></table></div>
+      </div>
+
+      <!-- Reglas tema oscuro -->
+      <div class="sub" id="tema-oscuro">
+        <header>
+          <p class="eyebrow"><b>A.3</b> Tema oscuro</p>
+          <h2>Ocho reglas para que el oscuro se lea bien</h2>
+          <p>Un tema oscuro no es invertir los colores. Se arma con capas de gris azulado que se aclaran a medida que "suben", texto que no es blanco puro y colores de datos un poco desaturados (Google, s.f.).</p>
+        </header>
+        <div class="rules" id="rules"></div>
+        <h3 style="margin-top:12px">Paleta base para copiar</h3>
+        <div class="swatches" id="swatches"></div>
+        <div class="code">
+          <div class="code-head"><span>tokens.css</span><button class="btn sm copy" data-copy="#tokensCode" type="button">Copiar</button></div>
+          <pre id="tokensCode"></pre>
+        </div>
+      </div>
+
+      <!-- Íconos -->
+      <div class="sub" id="iconos">
+        <header>
+          <p class="eyebrow"><b>A.4</b> Íconos</p>
+          <h2>Un ícono por cada cosa que se sensa</h2>
+          <p>Trazo de 1,75 px sobre una grilla de 24 × 24, sin relleno. Toman el color con <code>currentColor</code>, así que heredan el color de la variable. Copiá el SVG y pegalo directo en el HTML.</p>
+        </header>
+        <div class="icons" id="icons"></div>
+      </div>
+
+      <!-- Conexión de datos -->
+      <div class="sub" id="datos">
+        <header>
+          <p class="eyebrow"><b>A.5</b> Conectar los datos</p>
+          <h2>Del ESP32 al tablero por MQTT</h2>
+          <p>El nodo publica un mensaje JSON en un tópico y el dashboard se suscribe a ese tópico. MQTT trabaja con el modelo publicar/suscribir a través de un broker (OASIS, 2019); en el proyecto el broker es Mosquitto en el servidor Linux.</p>
+        </header>
+        <div class="options">
+          <div class="opt-card"><span class="badge">Opción 1 · recomendada para Aplicaciones</span><h3>Página propia HTML, CSS y JS</h3><p>Control total del diseño. Se publica gratis en GitHub Pages y se ve en el visor de la documentación.</p><ul><li>Usa MQTT.js por WebSockets.</li><li>Necesita un listener WebSocket en Mosquitto.</li></ul></div>
+          <div class="opt-card"><span class="badge">Opción 2</span><h3>Node-RED Dashboard</h3><p>Se arma arrastrando bloques. Rápido para el primer prototipo.</p><ul><li>Personalizar el tema oscuro lleva más trabajo.</li><li>Solo se ve dentro de la red de la escuela.</li></ul></div>
+          <div class="opt-card"><span class="badge">Opción 3</span><h3>Grafana</h3><p>Muy bueno para históricos con InfluxDB. Trae tema oscuro de fábrica.</p><ul><li>Para verlo en la documentación hay que habilitar <code>allow_embedding</code>.</li><li>Menos libertad visual.</li></ul></div>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Ejemplos de código">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="tp-json" id="t-json" type="button">Mensaje JSON</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tp-esp" id="t-esp" type="button">ESP32 (Arduino)</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tp-web" id="t-web" type="button">Dashboard (JS)</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tp-mos" id="t-mos" type="button">Mosquitto</button>
+        </div>
+        <div class="code" role="tabpanel" id="tp-json" aria-labelledby="t-json"><div class="code-head"><span id="topicLabel">tópico</span><button class="btn sm copy" data-copy="#codeJson" type="button">Copiar</button></div><pre id="codeJson"></pre></div>
+        <div class="code" role="tabpanel" id="tp-esp" aria-labelledby="t-esp" hidden><div class="code-head"><span>nodo.ino (fragmento)</span><button class="btn sm copy" data-copy="#codeEsp" type="button">Copiar</button></div><pre id="codeEsp"></pre></div>
+        <div class="code" role="tabpanel" id="tp-web" aria-labelledby="t-web" hidden><div class="code-head"><span>app.js</span><button class="btn sm copy" data-copy="#codeWeb" type="button">Copiar</button></div><pre id="codeWeb"></pre></div>
+        <div class="code" role="tabpanel" id="tp-mos" aria-labelledby="t-mos" hidden><div class="code-head"><span>/etc/mosquitto/conf.d/websockets.conf</span><button class="btn sm copy" data-copy="#codeMos" type="button">Copiar</button></div><pre id="codeMos"></pre></div>
+      </div>
+
+      <!-- Prompt dashboard -->
+      <div class="sub" id="prompt-dashboard">
+        <header>
+          <p class="eyebrow"><b>A.6</b> Con ayuda de Claude</p>
+          <h2>Pedile a Claude la primera versión</h2>
+          <p>El texto de abajo ya tiene el sensor, los umbrales y el tópico del nodo que elegiste arriba. Pegalo en <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, adjuntá capturas de los ejemplos que les gusten y después ajusten el resultado ustedes. Lo que entregan lo tienen que poder explicar en la defensa.</p>
+        </header>
+        <div class="prompt-box">
+          <div class="code-head"><span>Prompt para el dashboard</span><span style="display:flex;gap:10px;align-items:center"><span class="toast" id="toastDash" role="status"></span><button class="btn sm primary" id="copyDash" type="button">Copiar prompt</button></span></div>
+          <textarea id="promptDash" spellcheck="false" aria-label="Prompt para el dashboard"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= RUTA B ======================= -->
+  <section class="band" id="documentacion">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route-label"><b>B</b> Ruta documentación</span>
+        <h2>La carpeta del proyecto, sobre la plantilla de la profe</h2>
+        <p class="lead">La documentación se arma sobre la plantilla <a href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">Smart Campus IoT · Documentación</a> (Pedaci, 2026). Tiene 17 apartados en cuatro partes y un único archivo de datos, <code>assets/js/datos.js</code>. El camino depende de una pregunta.</p>
+      </div>
+
+      <div class="fork" role="group" aria-label="¿Ya tienen documentos del proyecto?">
+        <button type="button" data-path="claude" aria-pressed="true">
+          <span class="q">¿Ya tienen documentos del proyecto?</span>
+          <strong>Sí, ya tenemos documentos</strong>
+          <span class="d">Anteproyecto, informes, Gantt, presupuesto, fotos. Claude los pasa a la plantilla.</span>
+        </button>
+        <button type="button" data-path="manual" aria-pressed="false">
+          <span class="q">¿Ya tienen documentos del proyecto?</span>
+          <strong>No, arrancamos de cero</strong>
+          <span class="d">Se copia la plantilla y se completa apartado por apartado.</span>
+        </button>
+      </div>
+
+      <!-- Camino Claude -->
+      <div class="sub" id="camino-claude" style="margin-top:28px">
+        <ol class="steps">
+          <li><div class="inner">
+            <h3>Junten los documentos que ya tienen</h3>
+            <p>Todo lo que sirva como fuente, en el formato que esté (PDF, Word, Google Docs exportado, planillas, fotos):</p>
+            <ul><li>Anteproyecto y propuesta del nodo.</li><li>Carta Gantt y plan de sprints.</li><li>Presupuesto o lista de materiales (BOM).</li><li>Informes, bitácora de pruebas, capturas del dashboard.</li><li>Esquemas del circuito y fotos del nodo.</li></ul>
+          </div></li>
+          <li><div class="inner">
+            <h3>Abran un chat nuevo en Claude</h3>
+            <p>Entren a <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>, inicien una conversación nueva y adjunten los documentos con el clip. Si Claude no puede abrir el enlace de la plantilla, descarguen el repositorio (<a href="https://github.com/lpedaci/sexto-proyecto2026" target="_blank" rel="noopener">GitHub</a> → <b>Code</b> → <b>Download ZIP</b>) y adjunten también <code>index.html</code> y <code>assets/js/datos.js</code>.</p>
+          </div></li>
+          <li><div class="inner">
+            <h3>Peguen este pedido</h3>
+            <p>Completen los tres campos y copien el texto. El pedido le dice a Claude que use solo sus documentos, que respete la plantilla y que marque lo que falta.</p>
+            <div class="prompt-box">
+              <div class="fields">
+                <label for="fEquipo">Equipo<input id="fEquipo" value="Equipo 1" autocomplete="off"></label>
+                <label for="fCurso">Curso<input id="fCurso" value="6to Informática · División A" autocomplete="off"></label>
+                <label for="fNodo">Nodo asignado<select id="fNodo"></select></label>
+              </div>
+              <div class="code-head"><span>Prompt para la documentación</span><span style="display:flex;gap:10px;align-items:center"><span class="toast" id="toastDoc" role="status"></span><button class="btn sm primary" id="copyDoc" type="button">Copiar prompt</button></span></div>
+              <textarea id="promptDoc" spellcheck="false" aria-label="Prompt para la documentación" style="min-height:420px"></textarea>
+            </div>
+          </div></li>
+          <li><div class="inner">
+            <h3>Revisen lo que devuelve</h3>
+            <p>Claude puede equivocarse o completar huecos con datos que suenan bien pero no son de ustedes. Lean cada apartado contra sus documentos:</p>
+            <ul><li>Nombres, fechas, precios y resultados tienen que salir de sus archivos.</li><li>Lo que no tienen tiene que decir "A completar por el equipo".</li><li>Pídanle correcciones en el mismo chat, de a una por vez.</li></ul>
+            <div class="callout"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>La documentación la firma el equipo. Si en la defensa no pueden explicar un apartado, ese apartado no cuenta como hecho.</span></div>
+          </div></li>
+          <li><div class="inner">
+            <h3>Publiquen en GitHub Pages</h3>
+            <ul><li>Creen un repositorio y suban la carpeta completa de la plantilla con los archivos que les dio Claude.</li><li><b>Settings</b> → <b>Pages</b> → Branch <code>main</code> → <code>/ (root)</code> → <b>Save</b>.</li><li>En uno o dos minutos queda en <code>https://usuario.github.io/repositorio/</code>.</li><li>Carguen la dirección del dashboard en <code>previewUrl</code> para verlo en "Ver el proyecto".</li></ul>
+          </div></li>
+        </ol>
+      </div>
+
+      <!-- Camino manual -->
+      <div class="sub" id="camino-manual" hidden style="margin-top:28px">
+        <ol class="steps">
+          <li><div class="inner">
+            <h3>Copien la plantilla</h3>
+            <p>Entren al <a href="https://github.com/lpedaci/sexto-proyecto2026" target="_blank" rel="noopener">repositorio de la plantilla</a> y usen <b>Fork</b> (o <b>Code</b> → <b>Download ZIP</b> y súbanlo a un repositorio nuevo).</p>
+          </div></li>
+          <li><div class="inner">
+            <h3>Completen <code>assets/js/datos.js</code></h3>
+            <p>Es el único archivo de datos. Ábranlo con VS Code y completen, como mínimo:</p>
+            <ul><li><code>nombre</code>, <code>equipo</code>, <code>curso</code> y <code>nodoAsignado</code> (uno de: luz, presencia, aire, ruido, consumo, suelo, red).</li><li><code>integrantes</code> con formato "Apellido, Nombre" y rol (pm, desarrollo, aplicaciones, infraestructura).</li><li><code>docentes</code>, <code>auditor</code> y la primera fila de <code>cambios</code>.</li></ul>
+          </div></li>
+          <li><div class="inner">
+            <h3>Escriban los apartados en orden</h3>
+            <p>Los textos largos se editan en <code>index.html</code>. Busquen los recuadros amarillos "A completar por el equipo": marcan exactamente qué falta. Usen el mapa de abajo para saber qué va en cada uno.</p>
+          </div></li>
+          <li><div class="inner">
+            <h3>Actualicen durante el año</h3>
+            <p>Gantt, presupuesto, bitácora de pruebas y control de cambios se completan a medida que avanza el proyecto, no al final. Una fila nueva en <code>cambios</code> cada vez que el Product Owner aprueba un cambio.</p>
+          </div></li>
+          <li><div class="inner">
+            <h3>Publiquen en GitHub Pages</h3>
+            <p><b>Settings</b> → <b>Pages</b> → Branch <code>main</code> → <code>/ (root)</code>. Si después juntan suficiente material, pueden pasar al camino con Claude para pulir la redacción.</p>
+          </div></li>
+        </ol>
+      </div>
+
+      <!-- Mapa de la plantilla -->
+      <div class="sub" id="mapa">
+        <header>
+          <p class="eyebrow"><b>B.1</b> Mapa de la plantilla</p>
+          <h2>Qué va en cada apartado y de dónde sale</h2>
+          <p>Abrí cada apartado para ver qué escribir, qué documento suyo sirve de fuente y en qué archivo se edita.</p>
+        </header>
+        <div class="map" id="map"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CONTROL FINAL ======================= -->
+  <section class="band alt" id="control">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route-label"><b>QA</b> Control final</span>
+        <h2>Antes de entregar, revisen esto</h2>
+        <p class="lead">Dos listas de control de calidad, una por ruta. Lo que tilden queda guardado solo en este navegador. Los criterios de contraste y teclado salen de las pautas WCAG 2.2 (W3C, 2023).</p>
+      </div>
+      <div class="checks">
+        <div class="checklist" data-list="dash">
+          <header><div><h3>Dashboard</h3><span class="count"></span></div><div class="bar"><i></i></div></header>
+          <ul></ul>
+          <footer><button class="btn sm" type="button" data-reset>Desmarcar todo</button></footer>
+        </div>
+        <div class="checklist" data-list="doc">
+          <header><div><h3>Documentación</h3><span class="count"></span></div><div class="bar"><i></i></div></header>
+          <ul></ul>
+          <footer><button class="btn sm" type="button" data-reset>Desmarcar todo</button></footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= REFERENCIAS ======================= -->
+  <section class="band" id="referencias">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow"><b>APA 7</b> Referencias</p>
+        <h2>Fuentes citadas</h2>
+      </div>
+      <ul class="refs">
+        <li>Anthropic. (2026). <i>Claude</i> [Modelo de lenguaje de gran tamaño]. https://claude.ai</li>
+        <li>Few, S. (2013). <i>Information dashboard design: Displaying data for at-a-glance monitoring</i> (2.ª ed.). Analytics Press.</li>
+        <li>Google. (s.f.). <i>Dark theme</i>. Material Design 2. Recuperado el 2 de noviembre de 2026, de https://m2.material.io/design/color/dark-theme.html</li>
+        <li>Nielsen, J. (2024, 30 de enero). <i>10 usability heuristics for user interface design</i>. Nielsen Norman Group. https://www.nngroup.com/articles/ten-usability-heuristics/</li>
+        <li>OASIS. (2019). <i>MQTT version 5.0</i> [Estándar OASIS]. https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html</li>
+        <li>Pedaci, L. (2026). <i>Smart Campus IoT: Documentación</i> [Plantilla web]. https://lpedaci.github.io/sexto-proyecto2026/</li>
+        <li>World Wide Web Consortium. (2023). <i>Web Content Accessibility Guidelines (WCAG) 2.2</i>. https://www.w3.org/TR/WCAG22/</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Proyecto Institucional 6to año 2026 · Guía de orientación</span>
+    <span>Plantilla de documentación: <a href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">lpedaci.github.io/sexto-proyecto2026</a></span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ------------------------------------------------------------ íconos */
+  const ICONS = {
+    temp: '<path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/><path d="M11.5 17.5V10"/>',
+    hum: '<path d="M12 2.7s-6 6.6-6 11.3a6 6 0 0 0 12 0c0-4.7-6-11.3-6-11.3z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
+    aire: '<path d="M3 8h10a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h7"/>',
+    luz: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    ruido: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
+    presencia: '<circle cx="12" cy="7" r="3"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><path d="M3.5 10a9 9 0 0 1 1.6-4.5M20.5 10a9 9 0 0 0-1.6-4.5"/>',
+    consumo: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+    suelo: '<path d="M12 21v-9"/><path d="M12 12c0-4-3-6-7-6 0 4 3 6 7 6z"/><path d="M12 10c0-3.5 2.5-6 7-6 0 4-3 6-7 6z"/><path d="M5 21h14"/>',
+    red: '<path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M12 19.5h.01"/>',
+    ok: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+    warn: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16.5h.01"/>',
+    bad: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+    grid: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+    chart: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/>',
+    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+    cpu: '<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+    doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+    layers: '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
+    contrast: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/>',
+    tag: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.5 7.5h.01"/>',
+    palette: '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.8 1.5-1.5 0-1.3-1-1.6-1-2.8 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><path d="M7.5 11h.01M9.5 7h.01M14.5 7h.01"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    wifiOff: '<path d="M8.5 16a5 5 0 0 1 7 0M12 19.5h.01M3 3l18 18M5 12.5a10 10 0 0 1 3.5-2.2M2 8.8a15 15 0 0 1 4.2-2.9M10 5.1A15 15 0 0 1 22 8.8"/>',
+    phone: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+    type: '<path d="M4 7V5h16v2M9 19h6M12 5v14"/>'
+  };
+  const svgIcon = (n, cls = "ic") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+  const rawSvg = n => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
+
+  $("#heroIcoA").innerHTML = svgIcon("grid", "ic-lg");
+  $("#heroIcoB").innerHTML = svgIcon("doc", "ic-lg");
+
+  /* ------------------------------------------------------------ variables y nodos */
+  const fmt = (v, d) => Number(v).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const enClase = h => h >= 8 && h < 17;
+  const bump = (h, c, w) => Math.exp(-((h - c) ** 2) / (2 * w * w));
+
+  const BASE = {
+    temp: { id: "temp", nombre: "Temperatura", sensor: "DHT22", unidad: "°C", icon: "temp", color: "var(--c-temp)", hex: "#fb923c", min: 10, max: 36, dec: 1, tipo: "rango", u: { n: [18, 26], a: [16, 30] },
+      serie: (h, r) => 20 + 4 * Math.sin((h - 10) * Math.PI / 12) + (enClase(h) ? 1.2 : 0) + (r() - .5) * .6 },
+    hum: { id: "hum", nombre: "Humedad", sensor: "DHT22", unidad: "%", icon: "hum", color: "var(--c-hum)", hex: "#38bdf8", min: 0, max: 100, dec: 0, tipo: "rango", u: { n: [40, 60], a: [30, 70] },
+      serie: (h, r) => 54 - 9 * Math.sin((h - 10) * Math.PI / 12) + (r() - .5) * 3 }
+  };
+
+  const NODOS = {
+    aire: { nombre: "Calidad de aire", corto: "Aire (CO)", sensor: "MQ-7", lugar: "Laboratorio de Hardware", sector: "lab-hardware", variable: "Monóxido de carbono", clave: "co_ppm",
+      unidad: "ppm", icon: "aire", color: "var(--c-aire)", hex: "#a3e635", min: 0, max: 50, dec: 0, tipo: "max", u: { a: 9, b: 35 }, grafico: "area",
+      nota: "El MQ-7 necesita precalentamiento y calibración: los valores son orientativos. Mostrá siempre la unidad ppm y el umbral.",
+      serie: (h, r) => 3 + (enClase(h) ? 5 : 0) + 30 * bump(h, 10.5, .9) + 9 * bump(h, 14.5, 1) + r() * 2 },
+    luz: { nombre: "Luminosidad", corto: "Luz", sensor: "BH1750", lugar: "Aula 1", sector: "aula-1", variable: "Iluminancia", clave: "lux",
+      unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, grafico: "area",
+      nota: "Un aula de clase necesita alrededor de 300 a 500 lx en el plano de trabajo. Luz encendida fuera de horario es un buen caso de alerta.",
+      serie: (h, r) => Math.max(0, 140 * Math.sin((h - 6) * Math.PI / 13)) + (enClase(h) ? 330 : 0) + (h === 19 || h === 20 ? 320 : 0) + r() * 25 },
+    ruido: { nombre: "Nivel sonoro", corto: "Ruido (dB)", sensor: "KY-037", lugar: "Pasillo / SUM", sector: "sum", variable: "Nivel sonoro", clave: "db",
+      unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, grafico: "area",
+      nota: "El KY-037 estima el nivel: calibrenlo contra un decibelímetro (puede ser una app). Los recreos marcan picos claros.",
+      serie: (h, r) => 36 + (enClase(h) ? 14 : 0) + 22 * bump(h, 10, .35) + 20 * bump(h, 12.5, .4) + 18 * bump(h, 15, .35) + r() * 4 },
+    presencia: { nombre: "Presencia", corto: "Presencia (PIR)", sensor: "PIR HC-SR501", lugar: "Aula 2", sector: "aula-2", variable: "Detecciones por hora", clave: "mov",
+      unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", grafico: "barras",
+      nota: "El PIR no identifica personas: solo detecta movimiento. Mostrá Ocupada o Libre en palabras y alertá si hay movimiento fuera de horario.",
+      serie: (h, r) => enClase(h) ? 22 + r() * 22 : (h === 21 ? 4 : 0) },
+    consumo: { nombre: "Consumo eléctrico", corto: "Consumo", sensor: "SCT-013 (pinza)", lugar: "Sala de Informática", sector: "sala-info", variable: "Potencia", clave: "w",
+      unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, grafico: "area",
+      nota: "Usen pinza no invasiva y nunca intervengan la instalación de 220 V. Además de la potencia, muestren la energía del día en kWh.",
+      serie: (h, r) => 160 + (enClase(h) ? 1100 + r() * 300 : r() * 40) + 1250 * bump(h, 14, .5) },
+    suelo: { nombre: "Humedad de suelo", corto: "Suelo", sensor: "Capacitivo v1.2", lugar: "Patio / huerta", sector: "huerta", variable: "Humedad de suelo", clave: "suelo_pct",
+      unidad: "%", icon: "suelo", color: "var(--c-suelo)", hex: "#d4a373", min: 0, max: 100, dec: 0, tipo: "rango", u: { n: [40, 70], a: [25, 85] }, grafico: "area",
+      nota: "La humedad del suelo cambia lento: un gráfico de 24 h muestra bien el riego. La alerta útil es \"regar\" cuando baja del umbral.",
+      serie: (h, r) => (h < 9 ? 46 - h * 1.6 : 78 - (h - 9) * 2.1) + (r() - .5) * 1.5 },
+    red: { nombre: "Estado de red", corto: "Red (latencia)", sensor: "ESP32 (ping + RSSI)", lugar: "Sala de servidores", sector: "servidores", variable: "Latencia al servidor", clave: "lat_ms",
+      unidad: "ms", icon: "red", color: "var(--c-red)", hex: "#2dd4bf", min: 0, max: 250, dec: 0, tipo: "max", u: { a: 50, b: 150 }, grafico: "area",
+      nota: "No usa sensor extra. Muestren latencia y señal (RSSI en dBm) y distingan \"red lenta\" de \"nodo caído\".",
+      serie: (h, r) => 14 + r() * 10 + (enClase(h) ? 12 : 0) + 95 * bump(h, 11, .4) + 170 * bump(h, 15, .3) }
+  };
+  const ORDEN = ["aire", "luz", "ruido", "presencia", "consumo", "suelo", "red"];
+
+  const NIVEL = [
+    { k: "ok", txt: "Normal", icon: "ok" },
+    { k: "warn", txt: "Atención", icon: "warn" },
+    { k: "bad", txt: "Alerta", icon: "bad" }
+  ];
+  function estado(cfg, v, h) {
+    if (cfg.tipo === "max") return v < cfg.u.a ? 0 : v < cfg.u.b ? 1 : 2;
+    if (cfg.tipo === "rango") {
+      if (v >= cfg.u.n[0] && v <= cfg.u.n[1]) return 0;
+      if (v >= cfg.u.a[0] && v <= cfg.u.a[1]) return 1;
+      return 2;
+    }
+    if (cfg.tipo === "presencia") return (v > 0 && !(h >= 7 && h < 18)) ? 2 : 0;
+    return 0;
+  }
+  function etiqueta(cfg, nivel, v, h) {
+    if (cfg.tipo === "presencia") {
+      if (nivel === 2) return "Movimiento fuera de horario";
+      return v > 0 ? "Ocupada" : "Libre";
+    }
+    if (cfg.id === "suelo" && v < cfg.u.n[0]) return nivel === 2 ? "Regar ya" : "Regar pronto";
+    if (cfg.id === "aire" && nivel > 0) return nivel === 2 ? "Alerta: ventilar" : "Atención: ventilar";
+    return NIVEL[nivel].txt;
+  }
+  function pill(nivel, texto) {
+    const n = NIVEL[nivel];
+    return `<span class="pill ${n.k}">${svgIcon(n.icon, "ic-sm")}${esc(texto || n.txt)}</span>`;
+  }
+
+  /* ------------------------------------------------------------ datos simulados */
+  function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const nowH = new Date().getHours();
+  const horas = Array.from({ length: 24 }, (_, i) => (nowH - 23 + i + 24) % 24);
+  function serie(cfg, seed) {
+    const r = rng(seed);
+    return horas.map(h => Math.min(cfg.max, Math.max(cfg.min, cfg.serie(h, r))));
+  }
+
+  let actual = store.get("orient-nodo", "aire");
+  if (!NODOS[actual]) actual = "aire";
+  let datos = {};
+  let offline = false;
+  let ultimo = 0;
+
+  function cargarDatos() {
+    const seed = ORDEN.indexOf(actual) * 97 + 13;
+    datos = { temp: serie(BASE.temp, seed + 1), hum: serie(BASE.hum, seed + 2), main: serie(NODOS[actual], seed + 3) };
+  }
+
+  /* ------------------------------------------------------------ dibujos */
+  function sparkline(vals, color) {
+    const w = 110, h = 34, p = 3;
+    const mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
+    const pts = vals.map((v, i) => [p + i * (w - 2 * p) / (vals.length - 1), h - p - (v - mn) / rg * (h - 2 * p)]);
+    const d = pts.map((q, i) => (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1)).join(" ");
+    const last = pts[pts.length - 1];
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${d} L${last[0].toFixed(1)} ${h} L${p} ${h} Z" fill="${color}" fill-opacity=".12"/><path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" fill="${color}"/></svg>`;
+  }
+
+  function niceTicks(min, max, n = 5) {
+    const span = max - min, step0 = span / (n - 1);
+    const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= step0) || step0;
+    const out = [];
+    for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(6));
+    return out;
+  }
+
+  function bandas(cfg) {
+    const B = [];
+    if (cfg.tipo === "max") {
+      B.push([cfg.u.a, cfg.u.b, "warn"], [cfg.u.b, cfg.max, "bad"]);
+    } else if (cfg.tipo === "rango") {
+      B.push([cfg.min, cfg.u.a[0], "bad"], [cfg.u.a[0], cfg.u.n[0], "warn"], [cfg.u.n[1], cfg.u.a[1], "warn"], [cfg.u.a[1], cfg.max, "bad"]);
+    }
+    return B.map(([a, b, k]) => [Math.max(cfg.min, a), Math.min(cfg.max, b), k]).filter(([a, b]) => b > a);
+  }
+
+  function chart(cfg, vals) {
+    const W = 640, H = 240, L = 46, R = 14, T = 12, Bm = 28;
+    const iw = W - L - R, ih = H - T - Bm;
+    const x = cfg.grafico === "barras" ? i => L + (i + .5) * iw / vals.length : i => L + i * iw / (vals.length - 1);
+    const y = v => T + ih - (v - cfg.min) / (cfg.max - cfg.min) * ih;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(cfg.variable)} en las últimas 24 horas, en ${esc(cfg.unidad)}">`;
+    bandas(cfg).forEach(([a, b, k]) => {
+      s += `<rect x="${L}" y="${y(b).toFixed(1)}" width="${iw}" height="${(y(a) - y(b)).toFixed(1)}" fill="var(--${k})" fill-opacity=".07"/>`;
+    });
+    niceTicks(cfg.min, cfg.max).forEach(t => {
+      s += `<line x1="${L}" x2="${W - R}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>`;
+      s += `<text x="${L - 8}" y="${(y(t) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--text-3)" font-family="Geist Mono, monospace">${fmt(t, 0)}</text>`;
+    });
+    horas.forEach((h, i) => {
+      if (i % 4 === 3 || i === 0) {
+        const lab = i === vals.length - 1 ? "ahora" : String(h).padStart(2, "0") + " h";
+        s += `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="${i === 0 ? "start" : i === vals.length - 1 ? "end" : "middle"}" font-size="11" fill="var(--text-3)" font-family="Geist Mono, monospace">${lab}</text>`;
+      }
+    });
+    const col = cfg.hex;
+    if (cfg.grafico === "barras") {
+      const bw = iw / vals.length * .62;
+      vals.forEach((v, i) => {
+        const nv = estado(cfg, v, horas[i]);
+        const fill = nv === 2 ? "var(--bad)" : col;
+        s += `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${y(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0, y(cfg.min) - y(v)).toFixed(1)}" rx="2" fill="${fill}" fill-opacity="${i === vals.length - 1 ? 1 : .7}"/>`;
+      });
+    } else {
+      const pts = vals.map((v, i) => [x(i), y(v)]);
+      let d = "M" + pts[0][0].toFixed(1) + " " + pts[0][1].toFixed(1);
+      for (let i = 1; i < pts.length; i++) {
+        const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], mx = (x0 + x1) / 2;
+        d += ` C${mx.toFixed(1)} ${y0.toFixed(1)} ${mx.toFixed(1)} ${y1.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+      }
+      const gid = "g" + cfg.clave;
+      s += `<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".32"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>`;
+      s += `<path d="${d} L${x(vals.length - 1).toFixed(1)} ${y(cfg.min).toFixed(1)} L${L} ${y(cfg.min).toFixed(1)} Z" fill="url(#${gid})"/>`;
+      s += `<path d="${d}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>`;
+      const lp = pts[pts.length - 1];
+      s += `<line x1="${lp[0].toFixed(1)}" x2="${lp[0].toFixed(1)}" y1="${T}" y2="${y(cfg.min).toFixed(1)}" stroke="${col}" stroke-opacity=".35" stroke-dasharray="3 3"/>`;
+      s += `<circle cx="${lp[0].toFixed(1)}" cy="${lp[1].toFixed(1)}" r="6" fill="var(--bg)" stroke="${col}" stroke-width="2.4"/>`;
+    }
+    return s + "</svg>";
+  }
+
+  function gauge(cfg, v, h) {
+    const W = 240, cx = 120, cy = 118, r = 92, sw = 14;
+    const ang = t => Math.PI * (1 - t);
+    const pt = (t, rr = r) => [cx + rr * Math.cos(ang(t)), cy - rr * Math.sin(ang(t))];
+    const arc = (t0, t1, color) => {
+      const [x0, y0] = pt(t0), [x1, y1] = pt(t1);
+      return `<path d="M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}" fill="none" stroke="${color}" stroke-width="${sw}"/>`;
+    };
+    const N = 60, cols = ["var(--ok)", "var(--warn)", "var(--bad)"];
+    let s = `<svg viewBox="0 0 ${W} 136" aria-hidden="true">`;
+    s += arc(0, 1, "var(--surface-3)");
+    let start = 0, prev = null;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, val = cfg.min + t * (cfg.max - cfg.min);
+      const nv = estado(cfg, val, h);
+      if (prev === null) prev = nv;
+      if (nv !== prev || i === N) { s += `<g opacity=".85">${arc(start, t, cols[prev])}</g>`; start = t; prev = nv; }
+    }
+    const tv = Math.min(1, Math.max(0, (v - cfg.min) / (cfg.max - cfg.min)));
+    const [mx, my] = pt(tv);
+    s += `<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="9" fill="var(--bg)" stroke="var(--text)" stroke-width="3"/>`;
+    s += `<text x="${pt(0)[0]}" y="${cy + 16}" text-anchor="middle" font-size="10.5" fill="var(--text-3)" font-family="Geist Mono, monospace">${fmt(cfg.min, 0)}</text>`;
+    s += `<text x="${pt(1)[0]}" y="${cy + 16}" text-anchor="middle" font-size="10.5" fill="var(--text-3)" font-family="Geist Mono, monospace">${fmt(cfg.max, 0)}</text>`;
+    return s + "</svg>";
+  }
+
+  /* ------------------------------------------------------------ render */
+  const mainCfg = () => Object.assign({ id: actual }, NODOS[actual]);
+
+  function render() {
+    const cfg = mainCfg();
+    const dash = $("#dash");
+    dash.style.setProperty("--c", cfg.color);
+    dash.classList.toggle("is-off", offline);
+    $("#demoUrl").textContent = `equipo.github.io/dashboard-${actual}`;
+    $("#dashSide").innerHTML = `<span class="logo">${svgIcon("red", "ic-sm")}</span><span class="on">${svgIcon("grid")}</span><span>${svgIcon("chart")}</span><span>${svgIcon("bell")}</span><span>${svgIcon("cpu")}</span>`;
+    $("#dIco").innerHTML = svgIcon(cfg.icon, "ic-lg");
+    $("#dTitle").textContent = "Nodo " + cfg.nombre.toLowerCase();
+    $("#dSub").textContent = `${cfg.lugar} · ${cfg.sensor} + DHT22`;
+
+    const h = nowH;
+    const mv = datos.main[23];
+    const meta = offline
+      ? `<span class="pill bad">${svgIcon("wifiOff", "ic-sm")}Desconectado</span><span class="pill mute">${svgIcon("clock", "ic-sm")}hace 6 min</span>`
+      : `<span class="pill ok"><span class="live-dot"></span>En línea</span><span class="pill mute" id="agoPill">${svgIcon("clock", "ic-sm")}hace ${ultimo} s</span>`;
+    $("#dMeta").innerHTML = meta;
+    $("#offBanner").hidden = !offline;
+
+    // KPIs
+    const kp = [Object.assign({ main: false, vals: datos.temp }, BASE.temp), Object.assign({ main: false, vals: datos.hum }, BASE.hum), Object.assign({ main: true, vals: datos.main }, cfg)];
+    const anatKpi = '<span class="anat" style="left:-8px;top:-8px">2</span>';
+    $("#kpis").innerHTML = anatKpi + kp.map(k => {
+      const v = k.vals[23], prevV = k.vals[22];
+      const nv = estado(k, v, h);
+      const diff = v - prevV;
+      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+      let valHtml = `${fmt(v, k.dec)}<small>${esc(k.unidad)}</small>`;
+      if (k.tipo === "presencia") valHtml = `${v > 0 ? "Ocupada" : "Libre"}<small>${fmt(v, 0)} det/h</small>`;
+      const pillTxt = offline ? null : etiqueta(k, nv, v, h);
+      return `<div class="kpi${k.main ? " main" : ""}" style="--c:${k.color}">
+        <div class="kpi-top"><span class="kpi-ico">${svgIcon(k.icon)}</span><span class="kpi-name">${esc(k.main ? k.variable : k.nombre)}<small>${esc(k.sensor)}</small></span>${offline ? '<span class="pill mute">Sin datos</span>' : pill(nv, pillTxt)}</div>
+        <div class="kpi-row"><div><div class="kpi-val">${valHtml}</div><div class="kpi-delta">${sign}${fmt(Math.abs(diff), k.dec)} ${esc(k.unidad)} vs. hace 1 h</div></div>${sparkline(k.vals.slice(-12), k.hex)}</div>
+      </div>`;
+    }).join("");
+
+    // Gráfico
+    $("#chartTitle").textContent = `${cfg.variable} · últimas 24 h`;
+    $("#chartSub").textContent = `${cfg.unidad} · una lectura por hora`;
+    $("#chart").innerHTML = chart(cfg, datos.main);
+    const leg = [`<span><i style="background:${cfg.hex}"></i>${esc(cfg.variable)}</span>`];
+    if (cfg.tipo !== "presencia") leg.push(`<span><i style="background:var(--warn);opacity:.5"></i>Zona de atención</span>`, `<span><i style="background:var(--bad);opacity:.5"></i>Zona de alerta</span>`);
+    else leg.push(`<span><i style="background:var(--bad)"></i>Fuera de horario</span>`);
+    $("#chartLegend").innerHTML = leg.join("");
+
+    // Semáforo
+    const nv = estado(cfg, mv, h);
+    $("#gaugeSub").textContent = cfg.sensor;
+    $("#gauge").innerHTML = gauge(cfg, mv, h) +
+      `<div class="gauge-val">${cfg.tipo === "presencia" ? (mv > 0 ? "Ocupada" : "Libre") : fmt(mv, cfg.dec)}</div>
+       <div class="gauge-unit">${cfg.tipo === "presencia" ? fmt(mv, 0) + " detecciones en la última hora" : esc(cfg.variable) + " en " + esc(cfg.unidad)}</div>
+       ${offline ? '<span class="pill mute">Último valor recibido</span>' : pill(nv, etiqueta(cfg, nv, mv, h))}`;
+
+    // Alertas
+    const al = [];
+    let prev = 0;
+    datos.main.forEach((v, i) => {
+      const e = estado(cfg, v, horas[i]);
+      if (e > 0 && e !== prev) al.push({ h: horas[i], e, v });
+      prev = e;
+    });
+    datos.temp.forEach((v, i) => { if (estado(BASE.temp, v, horas[i]) === 2 && (i === 0 || estado(BASE.temp, datos.temp[i - 1], horas[i - 1]) < 2)) al.push({ h: horas[i], e: 2, v, base: "temp" }); });
+    let items = al.slice(-4).reverse().map(a => {
+      const k = a.base ? BASE[a.base] : cfg;
+      const txt = a.base ? `Temperatura ${fmt(a.v, 1)} °C` : (cfg.tipo === "presencia" ? "Movimiento fuera de horario" : `${cfg.variable} ${fmt(a.v, cfg.dec)} ${cfg.unidad}`);
+      return `<li class="${NIVEL[a.e].k}">${svgIcon(NIVEL[a.e].icon, "ic-sm")}<span>${esc(txt)}<br><span class="kpi-delta">${NIVEL[a.e].txt}</span></span><span class="t">${String(a.h).padStart(2, "0")}:${String((a.h * 7) % 60).padStart(2, "0")}</span></li>`;
+    });
+    if (offline) items.unshift(`<li class="bad">${svgIcon("wifiOff", "ic-sm")}<span>Nodo sin datos hace más de 5 min<br><span class="kpi-delta">Alerta</span></span><span class="t">ahora</span></li>`);
+    $("#alerts").innerHTML = items.length ? items.join("") : `<li class="empty">${svgIcon("ok", "ic-sm")}<span>Sin alertas en las últimas 24 h.</span></li>`;
+
+    // Salud
+    $("#healthSub").textContent = "firmware v1.2.0";
+    $("#health").innerHTML = [
+      ["Señal WiFi", offline ? "sin señal" : "−58 dBm · buena"],
+      ["Encendido", offline ? "desconocido" : "3 d 4 h"],
+      ["Mensajes", offline ? "0 / min" : "12 / min"],
+      ["Tópico", `campus/${cfg.sector}/${actual}/telemetria`]
+    ].map(([a, b]) => `<div><dt>${a}</dt><dd>${esc(b)}</dd></div>`).join("");
+
+    renderSecundario();
+  }
+
+  /* ------------------------------------------------------------ selector */
+  function renderPicker() {
+    $("#picker").innerHTML = ORDEN.map(k => {
+      const n = NODOS[k];
+      return `<button class="chip" type="button" data-nodo="${k}" aria-pressed="${k === actual}" style="--c:${n.color}"><span class="dot">${svgIcon(n.icon, "ic-sm")}</span>${esc(n.corto)}</button>`;
+    }).join("");
+    $("#pickerNote").innerHTML = `${svgIcon("tag", "ic-sm")}<span><b>${esc(NODOS[actual].sensor)}</b> · ${esc(NODOS[actual].nota)}</span>`;
+    $("#pickerNote").style.display = "flex"; $("#pickerNote").style.gap = "8px"; $("#pickerNote").style.alignItems = "baseline";
+  }
+  $("#picker").addEventListener("click", e => {
+    const b = e.target.closest("[data-nodo]"); if (!b) return;
+    elegir(b.dataset.nodo);
+  });
+  function elegir(k) {
+    actual = k; store.set("orient-nodo", k);
+    cargarDatos(); renderPicker(); render();
+    const sel = $("#fNodo"); if (sel && sel.value !== k) { sel.value = k; }
+    renderPromptDoc();
+  }
+
+  $("#btnAnat").addEventListener("click", e => {
+    const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
+    e.currentTarget.setAttribute("aria-pressed", on);
+    $("#dash").classList.toggle("show-anat", on);
+  });
+  $("#btnOff").addEventListener("click", e => {
+    offline = e.currentTarget.getAttribute("aria-pressed") !== "true";
+    e.currentTarget.setAttribute("aria-pressed", offline);
+    e.currentTarget.textContent = offline ? "Reconectar nodo" : "Simular desconexión";
+    render();
+  });
+
+  /* ------------------------------------------------------------ "en vivo" */
+  setInterval(() => {
+    if (offline) return;
+    ultimo += 1;
+    if (ultimo >= 5) {
+      ultimo = 0;
+      const cfg = mainCfg(), r = Math.random;
+      const jit = (arr, k, amp) => { const v = arr[23] + (r() - .5) * amp; arr[23] = Math.min(k.max, Math.max(k.min, v)); };
+      jit(datos.temp, BASE.temp, .3); jit(datos.hum, BASE.hum, 1.2);
+      if (cfg.tipo === "presencia") datos.main[23] = Math.max(0, Math.round(datos.main[23] + (r() - .5) * 4));
+      else jit(datos.main, cfg, (cfg.max - cfg.min) * .02);
+      render();
+    } else {
+      const p = $("#agoPill"); if (p) p.innerHTML = svgIcon("clock", "ic-sm") + `hace ${ultimo} s`;
+    }
+  }, 1000);
+
+  /* ------------------------------------------------------------ secciones que dependen del nodo */
+  function rangoTxt(cfg) {
+    const u = cfg.unidad;
+    if (cfg.tipo === "max") return [`menos de ${fmt(cfg.u.a, 0)} ${u}`, `${fmt(cfg.u.a, 0)} a ${fmt(cfg.u.b, 0)} ${u}`, `más de ${fmt(cfg.u.b, 0)} ${u}`];
+    if (cfg.tipo === "rango") return [`${fmt(cfg.u.n[0], 0)} a ${fmt(cfg.u.n[1], 0)} ${u}`, `${fmt(cfg.u.a[0], 0)} a ${fmt(cfg.u.n[0], 0)} o ${fmt(cfg.u.n[1], 0)} a ${fmt(cfg.u.a[1], 0)} ${u}`, `menos de ${fmt(cfg.u.a[0], 0)} o más de ${fmt(cfg.u.a[1], 0)} ${u}`];
+    return ["Ocupada o libre en horario escolar", "No aplica", "Movimiento fuera de horario (antes de 7 h o después de 18 h)"];
+  }
+  function renderSecundario() {
+    const cfg = mainCfg();
+    const filas = [Object.assign({ id: "temp" }, BASE.temp, { variable: "Temperatura interior" }), Object.assign({ id: "hum" }, BASE.hum, { variable: "Humedad relativa" }), cfg];
+    filas.push({ variable: "Estado del nodo", sensor: "Firmware", icon: "red", color: "var(--text-2)", unidad: "", tipo: "custom", txt: ["Datos hace menos de 2 min", "2 a 5 min sin datos", "Desconectado: más de 5 min"] });
+    $("#tablaUmbrales").innerHTML = `<thead><tr><th>Variable</th><th>Sensor</th><th><span class="pill ok">${svgIcon("ok", "ic-sm")}Normal</span></th><th><span class="pill warn">${svgIcon("warn", "ic-sm")}Atención</span></th><th><span class="pill bad">${svgIcon("bad", "ic-sm")}Alerta</span></th></tr></thead><tbody>` +
+      filas.map(f => {
+        const t = f.txt || rangoTxt(f);
+        return `<tr><td><span style="display:inline-flex;gap:8px;align-items:center;color:${f.color}">${svgIcon(f.icon, "ic-sm")}<span style="color:var(--text)">${esc(f.variable)}</span></span></td><td>${esc(f.sensor)}</td><td class="num">${esc(t[0])}</td><td class="num">${esc(t[1])}</td><td class="num">${esc(t[2])}</td></tr>`;
+      }).join("") + "</tbody>";
+
+    // código
+    const ts = "2026-11-02T10:42:05-03:00";
+    const mainVal = cfg.tipo === "presencia" ? 32 : +(datos.main[23]).toFixed(cfg.dec);
+    const topic = `campus/${cfg.sector}/${actual}/telemetria`;
+    $("#topicLabel").textContent = "tópico: " + topic;
+    $("#codeJson").innerHTML = `{
+  <span class="s">"nodo"</span>: <span class="s">"${actual}-01"</span>,
+  <span class="s">"ts"</span>: <span class="s">"${ts}"</span>,
+  <span class="s">"temp"</span>: <span class="n">${fmt(datos.temp[23], 1).replace(",", ".")}</span>,
+  <span class="s">"hum"</span>: <span class="n">${Math.round(datos.hum[23])}</span>,
+  <span class="s">"${cfg.clave}"</span>: <span class="n">${mainVal}</span>,
+  <span class="s">"rssi"</span>: <span class="n">-58</span>
+}`;
+    $("#codeEsp").innerHTML = `<span class="c">// Librerías: PubSubClient y ArduinoJson</span>
+<span class="k">const char</span>* TOPIC = <span class="s">"${topic}"</span>;
+
+<span class="k">void</span> publicar() {
+  StaticJsonDocument&lt;<span class="n">256</span>&gt; doc;
+  doc[<span class="s">"nodo"</span>] = <span class="s">"${actual}-01"</span>;
+  doc[<span class="s">"temp"</span>] = dht.readTemperature();
+  doc[<span class="s">"hum"</span>]  = dht.readHumidity();
+  doc[<span class="s">"${cfg.clave}"</span>] = leer${actual.charAt(0).toUpperCase() + actual.slice(1)}(); <span class="c">// función de tu sensor (${esc(cfg.sensor)})</span>
+  doc[<span class="s">"rssi"</span>] = WiFi.RSSI();
+
+  <span class="k">char</span> buf[<span class="n">256</span>];
+  serializeJson(doc, buf);
+  <span class="k">if</span> (!mqtt.connected()) reconectar();  <span class="c">// reconexión automática</span>
+  mqtt.publish(TOPIC, buf);
+}`;
+    $("#codeWeb").innerHTML = `<span class="c">// &lt;script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"&gt;&lt;/script&gt;</span>
+<span class="k">const</span> client = mqtt.connect(<span class="s">"ws://IP-DEL-SERVIDOR:9001"</span>, {
+  username: <span class="s">"dashboard"</span>, password: <span class="s">"********"</span>
+});
+<span class="k">let</span> ultimoDato = Date.now();
+
+client.on(<span class="s">"connect"</span>, () =&gt; client.subscribe(<span class="s">"${topic}"</span>));
+client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
+  <span class="k">try</span> {
+    <span class="k">const</span> d = JSON.parse(msg.toString());
+    ultimoDato = Date.now();
+    pintarTarjeta(<span class="s">"temp"</span>, d.temp, <span class="s">"°C"</span>);
+    pintarTarjeta(<span class="s">"hum"</span>, d.hum, <span class="s">"%"</span>);
+    pintarTarjeta(<span class="s">"${actual}"</span>, d.${cfg.clave}, <span class="s">"${cfg.unidad}"</span>);
+  } <span class="k">catch</span> (e) { console.warn(<span class="s">"Mensaje inválido"</span>, e); }
+});
+
+<span class="c">// Estado del nodo: más de 5 min sin datos = desconectado</span>
+setInterval(() =&gt; {
+  <span class="k">const</span> min = (Date.now() - ultimoDato) / <span class="n">60000</span>;
+  marcarEstado(min &lt; <span class="n">2</span> ? <span class="s">"ok"</span> : min &lt; <span class="n">5</span> ? <span class="s">"warn"</span> : <span class="s">"offline"</span>);
+}, <span class="n">10000</span>);`;
+    $("#codeMos").innerHTML = `<span class="c"># MQTT clásico para los ESP32</span>
+listener <span class="n">1883</span>
+<span class="c"># WebSockets para el dashboard en el navegador</span>
+listener <span class="n">9001</span>
+protocol websockets
+<span class="c"># Sin usuarios anónimos (Seguridad Informática)</span>
+allow_anonymous <span class="k">false</span>
+password_file /etc/mosquitto/passwd`;
+
+    renderPromptDash();
+  }
+
+  /* ------------------------------------------------------------ reglas, paleta, íconos */
+  const RULES = [
+    ["layers", "Fondo gris azulado, no negro puro", "Usen un fondo cerca de #0A0E15 y superficies que se aclaran por capas. El negro puro con texto blanco cansa la vista y hace que los bordes \"vibren\"."],
+    ["type", "Texto blanco roto", "El texto principal en #E5EAF2 y el secundario en #9BA7BB. Reserven el blanco puro para nada."],
+    ["contrast", "Contraste mínimo 4,5:1", "Es el criterio AA de WCAG para texto normal (W3C, 2023). Los números grandes pueden bajar a 3:1, las etiquetas chicas no."],
+    ["palette", "Un color por variable, siempre el mismo", "Si la temperatura es naranja, es naranja en la tarjeta, en el gráfico y en la leyenda. El color del sensor no se usa para estados."],
+    ["ok", "Semáforo con palabra e ícono", "Verde, amarillo y rojo solo para estados. Siempre acompañados de \"Normal\", \"Atención\" o \"Alerta\", para quien no distingue colores."],
+    ["tag", "Toda cifra con su unidad", "°C, %, ppm, dB, lx, W, ms. Un 23 suelto no dice nada. Usen números tabulares para que no salten al actualizarse."],
+    ["clock", "Mostrar cuándo llegó el dato", "\"Hace 4 s\" o la hora exacta. Es la heurística de visibilidad del estado del sistema (Nielsen, 2024)."],
+    ["wifiOff", "Diseñar el \"sin datos\"", "Prevean nodo desconectado, sensor que devuelve error y primera carga vacía. Probalo con el botón \"Simular desconexión\"."]
+  ];
+  $("#rules").innerHTML = RULES.map(([i, t, d]) => `<div class="rule"><span class="ico">${svgIcon(i)}</span><div><h3>${esc(t)}</h3><p>${esc(d)}</p></div></div>`).join("");
+
+  const SW = [
+    ["--bg", "#0a0e15", "Fondo"], ["--surface", "#111824", "Tarjeta"], ["--surface-2", "#172131", "Tarjeta elevada"], ["--border", "#233047", "Bordes"],
+    ["--text", "#e5eaf2", "Texto"], ["--text-2", "#9ba7bb", "Texto secundario"], ["--ok", "#4ade80", "Normal"], ["--warn", "#fbbf24", "Atención"], ["--bad", "#f87171", "Alerta"],
+    ["--c-temp", "#fb923c", "Temperatura"], ["--c-hum", "#38bdf8", "Humedad"], ["--c-aire", "#a3e635", "Calidad de aire"], ["--c-luz", "#fde68a", "Luminosidad"],
+    ["--c-ruido", "#c084fc", "Ruido"], ["--c-presencia", "#f472b6", "Presencia"], ["--c-consumo", "#818cf8", "Consumo"], ["--c-suelo", "#d4a373", "Suelo"], ["--c-red", "#2dd4bf", "Red"]
+  ];
+  $("#swatches").innerHTML = SW.map(([t, h, n]) => `<div class="sw"><i style="background:${h}"></i><div><span>${n}</span><code>${t}: ${h}</code></div></div>`).join("");
+  $("#tokensCode").textContent = ":root {\n" + SW.map(([t, h, n]) => `  ${t}: ${h};`.padEnd(26) + `/* ${n} */`).join("\n") + "\n}";
+
+  const ICON_LIST = [
+    ["temp", "Temperatura", "°C", "var(--c-temp)"], ["hum", "Humedad", "%", "var(--c-hum)"], ["aire", "Calidad de aire", "ppm", "var(--c-aire)"],
+    ["luz", "Luminosidad", "lx", "var(--c-luz)"], ["ruido", "Ruido", "dB", "var(--c-ruido)"], ["presencia", "Presencia", "det/h", "var(--c-presencia)"],
+    ["consumo", "Consumo eléctrico", "W · kWh", "var(--c-consumo)"], ["suelo", "Humedad de suelo", "%", "var(--c-suelo)"], ["red", "Señal / red", "ms · dBm", "var(--c-red)"],
+    ["bell", "Alertas", "", "var(--text-2)"], ["cpu", "Nodo ESP32", "", "var(--text-2)"], ["wifiOff", "Desconectado", "", "var(--bad)"]
+  ];
+  $("#icons").innerHTML = ICON_LIST.map(([k, n, u, c]) => `<div class="icon-card" style="--c:${c}"><span class="ico">${svgIcon(k, "ic-lg")}</span><div><strong>${n}</strong><br><span>${u || "interfaz"}</span></div><button class="btn sm" type="button" data-svg="${k}">Copiar SVG</button></div>`).join("");
+
+  /* ------------------------------------------------------------ copiar */
+  function copiar(text, btn, toastEl) {
+    const done = ok => {
+      const old = btn.textContent;
+      btn.textContent = ok ? "Copiado" : "Seleccioná y copiá";
+      if (toastEl) toastEl.textContent = ok ? "Listo para pegar en Claude" : "";
+      setTimeout(() => { btn.textContent = old; if (toastEl) toastEl.textContent = ""; }, 1800);
+    };
+    try {
+      navigator.clipboard.writeText(text).then(() => done(true), () => done(false));
+    } catch (e) { done(false); }
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-copy]");
+    if (b) { const el = $(b.dataset.copy); copiar(el.textContent, b); selectText(el); return; }
+    const s = e.target.closest("[data-svg]");
+    if (s) copiar(rawSvg(s.dataset.svg), s);
+  });
+  function selectText(el) { try { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+
+  /* ------------------------------------------------------------ pestañas */
+  $$(".tab").forEach(t => t.addEventListener("click", () => {
+    $$(".tab").forEach(o => { o.setAttribute("aria-selected", o === t); $("#" + o.getAttribute("aria-controls")).hidden = o !== t; });
+  }));
+
+  /* ------------------------------------------------------------ prompts */
+  function renderPromptDash() {
+    const cfg = mainCfg(), t = rangoTxt(cfg), topic = `campus/${cfg.sector}/${actual}/telemetria`;
+    $("#promptDash").value =
+`Actuá como diseñador UX/UI y desarrollador frontend. Necesito el dashboard web del nodo "${cfg.nombre}" de nuestro proyecto escolar Smart Campus IoT (6to año).
+
+CONTEXTO
+- Nodo ESP32 instalado en: ${cfg.lugar}.
+- Sensores: DHT22 (temperatura en °C y humedad en %) y ${cfg.sensor} (${cfg.variable.toLowerCase()} en ${cfg.unidad}).
+- Los datos llegan por MQTT desde Mosquitto, por WebSockets (ws://IP-DEL-SERVIDOR:9001), en el tópico ${topic}.
+- Ejemplo de mensaje: {"nodo":"${actual}-01","ts":"2026-11-02T10:42:05-03:00","temp":23.4,"hum":48,"${cfg.clave}":${cfg.tipo === "presencia" ? 32 : Math.round(datos.main[23])},"rssi":-58}
+
+QUÉ TIENE QUE MOSTRAR (en este orden)
+1. Encabezado: nombre del nodo, sector, estado "En línea / Desconectado" y hora del último dato.
+2. Tres tarjetas: temperatura, humedad y ${cfg.variable.toLowerCase()} (destacada). Cada una con ícono SVG, valor grande, unidad, mini gráfico de tendencia y diferencia con hace 1 hora.
+3. Semáforo de ${cfg.variable.toLowerCase()}: Normal ${t[0]}; Atención ${t[1]}; Alerta ${t[2]}.
+   Temperatura: Normal 18 a 26 °C; Atención 16 a 18 o 26 a 30 °C; Alerta fuera de eso.
+   Humedad: Normal 40 a 60 %; Atención 30 a 40 o 60 a 70 %; Alerta fuera de eso.
+4. Gráfico histórico de las últimas 24 h con las franjas de umbral de fondo.
+5. Lista de alertas con hora, nivel y motivo, y un mensaje cuando no hay alertas.
+6. Salud del nodo: señal WiFi (RSSI), mensajes por minuto, tópico.
+
+DISEÑO
+- Tema oscuro: fondo #0A0E15, tarjetas #111824, bordes #233047, texto #E5EAF2 y #9BA7BB.
+- Color de la variable principal: ${cfg.hex}. Temperatura #FB923C, humedad #38BDF8. Estados: #4ADE80, #FBBF24, #F87171.
+- El color del semáforo siempre va con la palabra (Normal, Atención, Alerta) y un ícono.
+- Contraste mínimo 4,5:1 (WCAG 2.2 AA), foco de teclado visible, números tabulares.
+- Responsive: que funcione en 360 px, 768 px y 1440 px sin scroll horizontal.
+
+TÉCNICO
+- HTML, CSS y JavaScript sin frameworks, en archivos separados (index.html, styles.css, app.js), listo para GitHub Pages.
+- MQTT.js desde CDN. Si no hay conexión, que arranque en "modo demo" con datos simulados y lo indique en pantalla.
+- Si pasan más de 5 minutos sin datos, mostrar "Nodo desconectado" y marcar los valores como viejos.
+- Validar el JSON recibido: ignorar valores vacíos o fuera del rango del sensor.
+- Comentá el código en español para que podamos explicarlo en la defensa.
+
+Al final, explicame en una lista corta qué hace cada archivo y qué tengo que cambiar para conectarlo a nuestro servidor.`;
+  }
+
+  // selector del prompt de documentación
+  $("#fNodo").innerHTML = ORDEN.map(k => `<option value="${k}">${esc(NODOS[k].nombre)} (${k})</option>`).join("");
+  const saved = store.get("orient-doc", null);
+  if (saved) { if (saved.equipo) $("#fEquipo").value = saved.equipo; if (saved.curso) $("#fCurso").value = saved.curso; }
+  $("#fNodo").value = actual;
+
+  function renderPromptDoc() {
+    const eq = $("#fEquipo").value.trim() || "Equipo", cu = $("#fCurso").value.trim() || "6to año", nk = $("#fNodo").value, n = NODOS[nk];
+    store.set("orient-doc", { equipo: eq, curso: cu });
+    $("#promptDoc").value =
+`Hola, Claude. Somos el ${eq} de ${cu}. Te adjunto los documentos que ya tenemos de nuestro proyecto institucional Smart Campus IoT. Nuestro nodo es "${n.nombre}" (nodoAsignado: "${nk}", sensor ${n.sensor}, instalado en ${n.lugar}).
+
+QUÉ NECESITO
+A partir de los documentos que ya tenemos del proyecto, creá la web de documentación usando la plantilla de documentación que compartió la profe:
+- Web de la plantilla: https://lpedaci.github.io/sexto-proyecto2026/
+- Código de la plantilla: https://github.com/lpedaci/sexto-proyecto2026
+(Si no podés abrir los enlaces, usá los archivos index.html y datos.js que te adjunto.)
+
+REGLAS
+1. Respetá la estructura de la plantilla: 17 apartados en 4 partes (Presentación, Planificación, Diseño técnico, Seguimiento) más la Guía de uso. No cambies el diseño ni los nombres de los apartados.
+2. Usá SOLO información que esté en nuestros documentos. No inventes nombres, fechas, precios, mediciones ni resultados.
+3. Donde falte información, dejá el recuadro "A completar por el equipo" y decí qué dato falta.
+4. Los datos estructurados van en assets/js/datos.js: nombre, bajada, equipo, curso, institucion, nodoAsignado, previewUrl, repoUrl, ganttSheetUrl, integrantes ("Apellido, Nombre" y rol: pm, desarrollo, aplicaciones o infraestructura), docentes, auditor, cambios, gantt, bom y pruebas.
+5. Los textos largos (problema, objetivo del nodo, alcances, resultados) van en index.html, dentro del apartado que corresponde.
+6. Escribí en español rioplatense, claro y en tercera persona del equipo. Sin rayas largas.
+7. Si citás fuentes (datasheets, normas, umbrales), usá formato APA 7.ª edición, con cita en el texto y lista de referencias.
+8. Agregá una fila en "cambios" con la fecha de hoy que diga que la documentación se armó a partir de los documentos del equipo.
+
+QUÉ ME TENÉS QUE DEVOLVER
+a) El archivo assets/js/datos.js completo.
+b) Los fragmentos de index.html que cambiaste, indicando en qué apartado va cada uno (o el index.html completo).
+c) Una tabla con: apartado, qué completaste, de qué documento nuestro salió, y qué falta todavía.
+d) Los pasos para publicarlo en GitHub Pages.`;
+  }
+  ["#fEquipo", "#fCurso"].forEach(s => $(s).addEventListener("input", renderPromptDoc));
+  $("#fNodo").addEventListener("change", e => { elegir(e.target.value); });
+  $("#copyDoc").addEventListener("click", e => { copiar($("#promptDoc").value, e.currentTarget, $("#toastDoc")); $("#promptDoc").select(); });
+  $("#copyDash").addEventListener("click", e => { copiar($("#promptDash").value, e.currentTarget, $("#toastDash")); $("#promptDash").select(); });
+
+  /* ------------------------------------------------------------ bifurcación */
+  $$(".fork button").forEach(b => b.addEventListener("click", () => {
+    $$(".fork button").forEach(o => o.setAttribute("aria-pressed", o === b));
+    $("#camino-claude").hidden = b.dataset.path !== "claude";
+    $("#camino-manual").hidden = b.dataset.path !== "manual";
+  }));
+
+  /* ------------------------------------------------------------ mapa de la plantilla */
+  const MAPA = [
+    ["1 · Presentación", [
+      [1, "Control de cambios", "Una fila por cada cambio aprobado: versión, fecha real, responsable y detalle.", "Historial del repositorio, actas o mensajes con el Product Owner.", "datos.js → cambios"],
+      [2, "Objetivo y visión general", "Qué hace su nodo dentro del sistema, en dos o tres oraciones.", "Anteproyecto.", "index.html"],
+      [3, "Problema a resolver", "En qué sector se instala, qué se observa hoy y qué decisión va a poder tomar la escuela.", "Anteproyecto, relevamiento del sector.", "index.html"],
+      [4, "Alcances", "Qué del Nivel 1 cumplen y qué del Nivel 2 encaran.", "Propuesta y acuerdos con el auditor.", "index.html"],
+      [5, "Equipo e integrantes", "Nombres, roles y fotos cuadradas de 400 × 400 px.", "Lista del equipo.", "datos.js → integrantes, docentes"],
+      [6, "Asignaturas involucradas", "Qué produjo el equipo en cada materia.", "Consignas y entregas de cada asignatura.", "index.html"]
+    ]],
+    ["2 · Planificación", [
+      [7, "Planificación y Scrum", "Duración de los sprints, backlog y quién es Scrum Master.", "Tablero de tareas (Trello, GitHub Projects).", "datos.js → semanasPorSprint"],
+      [8, "Carta Gantt", "La Gantt del equipo publicada desde Google Sheets.", "Planilla de la Gantt.", "datos.js → ganttSheetUrl, gantt"],
+      [9, "Entregables e hitos", "Qué se entregó, cuándo y en qué estado.", "Gantt y cronograma de la materia.", "index.html"]
+    ]],
+    ["3 · Diseño técnico", [
+      [10, "Arquitectura del sistema", "Recorrido del dato y servicios del servidor que usan.", "Diagrama del servidor (Sistemas Operativos).", "index.html"],
+      [11, "Plano de diseño", "Esquema del nodo, tabla de conexiones y ubicación en la escuela.", "Fritzing o Tinkercad, fotos del protoboard.", "index.html"],
+      [12, "Componentes", "Sensores reales con fotos propias de 1200 × 800 px.", "Datasheets y BOM.", "assets/img/componentes/"],
+      [13, "Diseño de la aplicación", "Wireframe, capturas escritorio y móvil, paleta, logo y umbrales justificados.", "El dashboard de la Ruta A.", "index.html + previewUrl"]
+    ]],
+    ["4 · Seguimiento", [
+      [14, "Presupuesto y BOM", "Cantidades y precios en pesos argentinos con la fecha del presupuesto.", "Presupuestos de proveedores.", "datos.js → bom"],
+      [15, "Bitácora de pruebas", "Prueba, resultado esperado, resultado obtenido y estado.", "Cuaderno de laboratorio, capturas del monitor serie.", "datos.js → pruebas"],
+      [16, "Resultados y mejoras", "Qué funcionó, qué no y qué harían en una segunda etapa.", "Conclusiones y devoluciones de los docentes.", "index.html"],
+      [17, "Guía de uso", "Ya viene escrita. Revisen que los enlaces funcionen.", "La plantilla.", "index.html"]
+    ]]
+  ];
+  $("#map").innerHTML = MAPA.map(([g, items]) => `<div class="map-col"><h3>${esc(g)}<span>${items.length} apartados</span></h3>${items.map(([n, t, q, f, a]) =>
+    `<details><summary><span class="n">${String(n).padStart(2, "0")}</span><span>${esc(t)}</span></summary><div class="body"><span><b>Qué va:</b> ${esc(q)}</span><span><b>Fuente:</b> ${esc(f)}</span><span><b>Se edita en:</b> <code>${esc(a)}</code></span></div></details>`).join("")}</div>`).join("");
+
+  /* ------------------------------------------------------------ checklists */
+  const CHECKS = {
+    dash: [
+      "Se ve bien en 360 px, 768 px y 1440 px, sin scroll horizontal.",
+      "Cada valor tiene su unidad (°C, %, ppm, dB, lx, W, ms).",
+      "El color del semáforo siempre va con palabra e ícono.",
+      "El texto tiene contraste de 4,5:1 o más sobre el fondo.",
+      "El fondo es gris azulado oscuro, no negro puro.",
+      "Se ve la hora o la antigüedad del último dato.",
+      "Si el nodo no publica por 5 min, aparece \"Desconectado\".",
+      "Hay mensajes para \"sin alertas\" y \"sin datos todavía\".",
+      "Probaron valores extremos: 0, el máximo del sensor y un JSON roto.",
+      "Los umbrales coinciden con la tabla de la documentación.",
+      "Se puede recorrer con el teclado y el foco se ve.",
+      "Los gráficos tienen ejes con unidad y escala correcta."
+    ],
+    doc: [
+      "Ningún dato es inventado; lo que falta dice \"A completar\".",
+      "nodoAsignado en datos.js coincide con el nodo del equipo.",
+      "Integrantes en formato \"Apellido, Nombre\" y con rol.",
+      "El control de cambios tiene fechas reales.",
+      "La Gantt de Google Sheets está publicada y se ve.",
+      "Las fotos de componentes son propias.",
+      "Los umbrales están justificados con fuentes en APA 7.",
+      "previewUrl y repoUrl están cargados y abren.",
+      "Está publicada en GitHub Pages y se ve bien en el celular.",
+      "Cada integrante leyó la documentación y puede explicar su parte."
+    ]
+  };
+  $$(".checklist").forEach(box => {
+    const key = box.dataset.list, list = CHECKS[key], sk = "orient-check-" + key;
+    let marcados = store.get(sk, []);
+    const ul = $("ul", box);
+    ul.innerHTML = list.map((t, i) => `<li><label for="chk-${key}-${i}"><input type="checkbox" id="chk-${key}-${i}" data-i="${i}"${marcados.includes(i) ? " checked" : ""}><span>${esc(t)}</span></label></li>`).join("");
+    const upd = () => {
+      const n = marcados.length;
+      $(".count", box).textContent = `${n} de ${list.length}`;
+      $(".bar i", box).style.width = (n / list.length * 100) + "%";
+    };
+    ul.addEventListener("change", e => {
+      const i = +e.target.dataset.i;
+      marcados = e.target.checked ? [...new Set([...marcados, i])] : marcados.filter(x => x !== i);
+      store.set(sk, marcados); upd();
+    });
+    $("[data-reset]", box).addEventListener("click", () => { marcados = []; store.set(sk, []); $$("input", ul).forEach(c => c.checked = false); upd(); });
+    upd();
+  });
+
+  /* ------------------------------------------------------------ inicio */
+  cargarDatos(); renderPicker(); render(); renderPromptDoc();
+})();
+</script>
+</body>
+</html>
