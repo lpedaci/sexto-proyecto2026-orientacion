@@ -4,214 +4,71 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tablero Central Smart Campus</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Maqueta de referencia de la landing del tablero central: todos los nodos del campus en tiempo real, equipos y acceso a cada dashboard.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Crect width="32" height="32" rx="8" fill="%23EC8494"/%3E%3Cg fill="none" stroke="%231A0C12" stroke-width="2.4" stroke-linecap="round"%3E%3Cpath d="M6 13.2a14 14 0 0 1 20 0"/%3E%3Cpath d="M9.5 17a9 9 0 0 1 13 0"/%3E%3Cpath d="M13 20.6a4.2 4.2 0 0 1 6 0"/%3E%3C/g%3E%3Ccircle cx="16" cy="24" r="1.7" fill="%231A0C12"/%3E%3C/svg%3E">
+<meta name="author" content="Lourdes Pedaci">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://lpedaci.github.io/sexto-proyecto2026-orientacion/tablero-general.html">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+<!-- Íconos -->
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#0a0e15">
+<meta name="color-scheme" content="dark">
+
+<!-- Tarjetas para redes y mensajería (Open Graph y X) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Smart Campus IoT">
+<meta property="og:title" content="Tablero Central Smart Campus">
+<meta property="og:description" content="Maqueta de referencia de la landing del tablero central: todos los nodos del campus en tiempo real, equipos y acceso a cada dashboard.">
+<meta property="og:url" content="https://lpedaci.github.io/sexto-proyecto2026-orientacion/tablero-general.html">
+<meta property="og:image" content="https://lpedaci.github.io/sexto-proyecto2026-orientacion/assets/img/og/og-tablero.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Campus en vivo. Maqueta del tablero central de Smart Campus IoT, con indicadores, mapa de nodos y tarjetas.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tablero Central Smart Campus">
+<meta name="twitter:description" content="Maqueta de referencia de la landing del tablero central: todos los nodos del campus en tiempo real, equipos y acceso a cada dashboard.">
+<meta name="twitter:image" content="https://lpedaci.github.io/sexto-proyecto2026-orientacion/assets/img/og/og-tablero.png">
+<meta name="twitter:image:alt" content="Campus en vivo. Maqueta del tablero central de Smart Campus IoT, con indicadores, mapa de nodos y tarjetas.">
+
+<!-- Datos estructurados para buscadores -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "url": "https://lpedaci.github.io/sexto-proyecto2026-orientacion/tablero-general.html",
+  "name": "Tablero Central Smart Campus",
+  "description": "Maqueta de referencia de la landing del tablero central: todos los nodos del campus en tiempo real, equipos y acceso a cada dashboard.",
+  "inLanguage": "es",
+  "isPartOf": {
+    "@id": "https://lpedaci.github.io/sexto-proyecto2026-orientacion/#sitio"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Lourdes Pedaci"
+  },
+  "sourceOrganization": {
+    "@type": "EducationalOrganization",
+    "name": "Instituto Leonardo Murialdo"
+  },
+  "image": "https://lpedaci.github.io/sexto-proyecto2026-orientacion/assets/img/og/og-tablero.png"
+}
+</script>
+
+<!-- Tipografías y estilos -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
-<style>
-/* Layout: sala de control. Resumen arriba (KPIs), luego "dónde" (mapa + semáforo por sector),
-   "qué" (tarjetas de nodo con acceso), "cuándo" (mapa de calor + alertas) y "quién" (equipos). Solo oscuro. */
-:root {
-  --bg: #0a0e15; --surface: #111824; --surface-2: #172131; --surface-3: #1e2a3d;
-  --border: #233047; --border-strong: #31415c;
-  --text: #e5eaf2; --text-2: #9ba7bb; --text-3: #6c7890;
-  --accent: #ec8494; --accent-ink: #1a0c12; --accent-soft: rgba(236, 132, 148, .12);
-  --ok: #4ade80; --ok-soft: rgba(74, 222, 128, .12);
-  --warn: #fbbf24; --warn-soft: rgba(251, 191, 36, .13);
-  --bad: #f87171; --bad-soft: rgba(248, 113, 113, .13);
-  --off: #6c7890; --off-soft: rgba(108, 120, 144, .16);
-  --c-temp: #fb923c; --c-hum: #38bdf8; --c-aire: #a3e635; --c-luz: #fde68a; --c-ruido: #c084fc;
-  --c-presencia: #f472b6; --c-consumo: #818cf8; --c-suelo: #d4a373; --c-red: #2dd4bf;
-  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
-  --font-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  --header-h: 60px;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
-body { margin: 0; background: var(--bg); color: var(--text); font: 400 15px/1.55 var(--font-body); -webkit-font-smoothing: antialiased; }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg); }
-a { color: var(--accent); text-underline-offset: 3px; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-[hidden] { display: none !important; }
-code { font-family: var(--font-mono); font-size: .88em; background: var(--surface-2); border: 1px solid var(--border); padding: .06em .36em; border-radius: 5px; overflow-wrap: anywhere; }
-h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; }
-p { margin: 0; }
-.ic { width: 20px; height: 20px; flex: none; } .ic-sm { width: 16px; height: 16px; flex: none; } .ic-lg { width: 26px; height: 26px; flex: none; }
-.wrap { max-width: 1320px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.num { font-variant-numeric: tabular-nums; }
-
-/* Encabezado */
-.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: rgba(10, 14, 21, .85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-.top .wrap { height: var(--header-h); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
-.brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-family: var(--font-display); font-weight: 700; font-stretch: 90%; white-space: nowrap; }
-.brand-mark { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
-.brand small { font: 400 12px var(--font-mono); color: var(--text-3); }
-.top nav { justify-self: center; min-width: 0; max-width: 100%; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
-.top nav a { color: var(--text-2); text-decoration: none; font-size: 13.5px; padding: 6px 13px; border-radius: 999px; white-space: nowrap; }
-.top nav a:hover, .top nav a.on { color: var(--text); background: var(--surface-3); }
-.top-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
-.clock { font: 500 13px var(--font-mono); color: var(--text-2); font-variant-numeric: tabular-nums; }
-.back { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 999px; background: var(--text); color: var(--bg); text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap; }
-.back:hover { background: var(--accent); color: var(--accent-ink); }
-@media (max-width: 1000px) { .top .wrap { grid-template-columns: auto minmax(0, 1fr) auto; } .top nav { justify-self: center; } .clock { display: none; } }
-@media (max-width: 640px) { .top .wrap { grid-template-columns: auto minmax(0, 1fr); } .top nav { display: none; } .brand small { display: none; } }
-
-/* Aviso de maqueta */
-.note-bar { border-bottom: 1px solid var(--border); background: linear-gradient(90deg, var(--accent-soft), transparent 70%); }
-.note-bar .wrap { display: flex; align-items: center; gap: 14px; padding-block: 10px; flex-wrap: wrap; font-size: 13.5px; color: var(--text-2); }
-.note-bar b { color: var(--text); font-weight: 600; }
-.note-bar .sp { flex: 1; min-width: 0; }
-.btn { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 9px; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--text); font: 500 13px var(--font-body); cursor: pointer; text-decoration: none; white-space: nowrap; }
-.btn:hover { background: var(--surface-3); color: var(--text); }
-.btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-.btn.go { background: color-mix(in srgb, var(--c, var(--accent)) 14%, var(--surface-2)); border-color: color-mix(in srgb, var(--c, var(--accent)) 40%, var(--border)); }
-.btn.go:hover { background: color-mix(in srgb, var(--c, var(--accent)) 24%, var(--surface-2)); }
-
-/* Secciones */
-main { padding-block: 28px 56px; display: grid; gap: 22px; }
-.head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
-.head h1 { font-size: clamp(2.4rem, 5.5vw, 4.2rem); font-weight: 700; font-stretch: 78%; line-height: .95; letter-spacing: -.025em; }
-.head p { color: var(--text-2); margin-top: 8px; }
-.live { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface); font-size: 13px; color: var(--text-2); }
-.live b { font: 500 11.5px var(--font-mono); letter-spacing: .14em; color: var(--text); }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex: none; animation: pulse 2s infinite; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); } 70% { box-shadow: 0 0 0 8px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
-
-.panel { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; min-width: 0; }
-.panel-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
-.panel-h h2 { font-size: 1.15rem; font-weight: 700; font-stretch: 92%; }
-.panel-h span { font-size: 12.5px; color: var(--text-3); }
-.eyebrow { font: 500 11.5px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
-.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-
-/* KPIs */
-.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
-@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpis .kpi:last-child { grid-column: 1 / -1; } }
-.kpi { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0; }
-.kpi-top { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); }
-.kpi-top .ib { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); }
-.kpi-val { font-family: var(--font-display); font-weight: 600; font-stretch: 86%; font-size: 2.2rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.kpi-val small { font: 500 .9rem var(--font-body); color: var(--text-2); margin-left: 4px; }
-.kpi-sub { font-size: 12.5px; color: var(--text-3); }
-
-/* Pills */
-.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
-.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
-.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.off { background: var(--off-soft); color: var(--text-2); }
-
-/* Mapa + semáforo */
-.row-2 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 1000px) { .row-2 { grid-template-columns: 1fr; } }
-.map-wrap { display: grid; gap: 14px; }
-.map-wrap svg { width: 100%; min-width: 600px; height: auto; display: block; }
-.floor { min-width: 0; overflow-x: auto; }
-.floor-h { display: flex; align-items: center; gap: 8px; font: 500 11.5px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
-.floor-h b { color: var(--text-2); font-weight: 500; }
-.floor-h::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-.map-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--text-2); margin-top: 10px; }
-.map-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
-.node-g { cursor: pointer; }
-.node-g:focus { outline: none; }
-.node-g:focus-visible .ring { stroke: var(--accent); stroke-width: 3; }
-.halo { transform-box: fill-box; transform-origin: center; animation: halo 2.4s ease-out infinite; }
-@keyframes halo { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.1); opacity: 0; } }
-
-.sectors { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.sectors li { display: grid; grid-template-columns: 4px 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px 10px 0; border-radius: 12px; background: var(--surface-2); overflow: hidden; }
-.sectors .stripe { align-self: stretch; margin: -10px 0; }
-.sectors .ib { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); }
-.sectors strong { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sectors .meta { font-size: 12.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-.sectors .right { display: grid; justify-items: end; gap: 4px; }
-.sectors .v { font-family: var(--font-display); font-weight: 600; font-stretch: 88%; font-size: 1.15rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.sectors .v small { font: 500 11.5px var(--font-body); color: var(--text-2); margin-left: 3px; }
-
-/* Tarjetas de nodo */
-.nodes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-@media (max-width: 1150px) { .nodes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 860px) { .nodes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .nodes { grid-template-columns: 1fr; } }
-.ncard { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: grid; gap: 12px; min-width: 0; transition: border-color .25s, box-shadow .25s; }
-.ncard.flash { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); }
-.ncard.hl { box-shadow: 0 0 0 2px var(--accent); }
-.ncard.is-off { background: repeating-linear-gradient(135deg, var(--surface) 0 10px, #0f1520 10px 20px); }
-.nc-top { display: flex; align-items: center; gap: 10px; }
-.nc-top .ib { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); flex: none; }
-.nc-top h3 { font-size: 1rem; font-weight: 650; font-stretch: 95%; line-height: 1.2; }
-.nc-top p { font-size: 12.5px; color: var(--text-3); }
-.team-tag { margin-left: auto; font: 500 11px var(--font-mono); color: var(--text-2); border: 1px solid var(--border-strong); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
-.nc-mid { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
-.nc-val { font-family: var(--font-display); font-weight: 300; font-stretch: 84%; font-size: 2.7rem; line-height: .95; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.nc-val small { font: 500 .85rem var(--font-body); color: var(--text-2); margin-left: 4px; letter-spacing: 0; }
-.is-off .nc-val { color: var(--text-3); }
-.nc-val.txt { font-size: 2rem; font-weight: 400; }
-.nc-val.txt small { display: block; margin: 6px 0 0; }
-.ncard.add { border-style: dashed; background: transparent; align-content: center; justify-items: center; text-align: center; color: var(--text-3); font-size: 13.5px; gap: 8px; }
-.ncard.add .ib { width: 44px; height: 44px; border-radius: 12px; border: 1px dashed var(--border-strong); display: grid; place-items: center; font-size: 22px; color: var(--text-2); }
-.ncard.add strong { color: var(--text-2); font-size: 14.5px; }
-.nc-mid svg { width: 120px; height: 40px; flex: none; }
-.nc-env { display: flex; gap: 14px; font-size: 12.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
-.nc-env span { display: inline-flex; align-items: center; gap: 5px; }
-.nc-env .t { color: var(--c-temp); } .nc-env .h { color: var(--c-hum); }
-.nc-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 12px; }
-.ago { font: 12px var(--font-mono); color: var(--text-3); font-variant-numeric: tabular-nums; }
-
-/* Mapa de calor + alertas */
-.heat-wrap { overflow-x: auto; }
-.heat { display: grid; grid-template-columns: 150px repeat(24, minmax(16px, 1fr)); gap: 3px; min-width: 620px; font-size: 12px; }
-.heat .lab { color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; padding-right: 6px; }
-.heat .lab svg { color: var(--c); }
-.heat .cell { height: 26px; border-radius: 4px; }
-.heat .cell.na { background: repeating-linear-gradient(135deg, var(--surface-2) 0 4px, var(--surface) 4px 8px); }
-.heat .hr { font: 10.5px var(--font-mono); color: var(--text-3); text-align: center; white-space: nowrap; overflow: visible; }
-.heat .hr.last { text-align: right; }
-.heat-scale { display: flex; align-items: center; gap: 10px; margin-top: 12px; font: 11.5px var(--font-mono); color: var(--text-3); flex-wrap: wrap; }
-.heat-scale i { display: block; width: 180px; height: 8px; border-radius: 99px; }
-.feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 420px; overflow-y: auto; }
-.feed li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); font-size: 13.5px; animation: slide .45s ease-out; }
-@keyframes slide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.feed li .ic-sm { margin-top: 2px; }
-.feed li.warn .ic-sm { color: var(--warn); } .feed li.bad .ic-sm { color: var(--bad); } .feed li.ok .ic-sm { color: var(--ok); } .feed li.off .ic-sm { color: var(--text-2); }
-.feed small { display: block; color: var(--text-3); font-size: 12px; }
-.feed .t { font: 12px var(--font-mono); color: var(--text-3); }
-
-/* Equipos */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 980px; }
-th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-th { font: 500 11.5px var(--font-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); background: var(--surface-2); white-space: nowrap; }
-tr:last-child td { border-bottom: 0; }
-td .who { display: flex; align-items: center; gap: 10px; }
-td .who .ib { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 15%, transparent); color: var(--c); flex: none; }
-td .who b { display: block; font-weight: 600; }
-td .who span { font-size: 12.5px; color: var(--text-3); }
-.links { display: flex; gap: 6px; flex-wrap: nowrap; }
-.links .btn { padding: 6px 10px; }
-.caption { font-size: 13px; color: var(--text-3); margin-top: 12px; }
-
-/* Notas de diseño */
-.anat { position: absolute; z-index: 4; top: -10px; left: -10px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 700 12px/26px var(--font-mono); text-align: center; box-shadow: 0 0 0 4px rgba(236,132,148,.25); display: none; }
-.show-notes .anat { display: block; }
-.show-notes [data-n] { outline: 1.5px dashed rgba(236,132,148,.55); outline-offset: 4px; }
-.notes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; counter-reset: n; }
-.notes li { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); }
-.notes li::before { counter-increment: n; content: counter(n); grid-row: span 2; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); display: grid; place-items: center; font: 600 12px var(--font-mono); }
-.notes strong { font-size: 14.5px; }
-.notes span { font-size: 13.5px; color: var(--text-2); }
-.code { background: #070a10; border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; margin-top: 14px; }
-.code pre { margin: 0; padding: 16px; font: 13px/1.6 var(--font-mono); color: #d6deeb; }
-.code .c { color: #637777; font-style: italic; } .code .s { color: #addb67; } .code .k { color: #c792ea; }
-
-footer { border-top: 1px solid var(--border); padding-block: 24px 40px; color: var(--text-3); font-size: 13px; }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
-</style>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/tablero.css">
 </head>
 <body>
 
@@ -237,16 +94,16 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
 <main class="wrap" id="board">
   <!-- Resumen -->
-  <section id="resumen" style="display:grid;gap:18px">
+  <section id="resumen">
     <div class="head">
       <div>
         <p class="eyebrow">Instituto Leonardo Murialdo · Ciclo 2026</p>
-        <h1 style="margin-top:10px">Campus en vivo</h1>
+        <h1>Campus en vivo</h1>
         <p id="headSub">Ocho nodos IoT en dos plantas reportando al servidor central por MQTT.</p>
       </div>
       <span class="live"><span class="dot"></span><b>BROKER CONECTADO</b><span id="lastMsg" class="num">último mensaje hace 0 s</span></span>
     </div>
-    <div class="kpis" id="kpis" data-n style="position:relative"><span class="anat">1</span></div>
+    <div class="kpis" id="kpis" data-n><span class="anat">1</span></div>
   </section>
 
   <!-- Mapa + semáforo -->
@@ -255,7 +112,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <span class="anat">2</span>
       <div class="panel-h"><h2>Mapa del campus</h2><span>Dos plantas · topología en estrella · tocá un nodo para ver su tarjeta</span></div>
       <div class="map-wrap" id="map"></div>
-      <div class="map-legend"><span><i style="background:var(--ok)"></i>Normal</span><span><i style="background:var(--warn)"></i>Atención</span><span><i style="background:var(--bad)"></i>Alerta</span><span><i style="background:var(--off)"></i>Sin datos</span></div>
+      <div class="map-legend"><span><i class="ok"></i>Normal</span><span><i class="warn"></i>Atención</span><span><i class="bad"></i>Alerta</span><span><i class="off"></i>Sin datos</span></div>
     </div>
     <div class="panel" data-n>
       <span class="anat">3</span>
@@ -265,9 +122,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   </section>
 
   <!-- Nodos -->
-  <section id="nodos" style="display:grid;gap:14px">
-    <div class="panel-h" style="margin:0"><h2 style="font-size:1.6rem;font-stretch:82%">Nodos y acceso a cada dashboard</h2><span>Cada tarjeta abre el tablero del equipo</span></div>
-    <div class="nodes" id="nodes" data-n style="position:relative"><span class="anat">4</span></div>
+  <section id="nodos">
+    <div class="panel-h"><h2>Nodos y acceso a cada dashboard</h2><span>Cada tarjeta abre el tablero del equipo</span></div>
+    <div class="nodes" id="nodes" data-n><span class="anat">4</span></div>
   </section>
 
   <!-- Mapa de calor + alertas -->
@@ -276,7 +133,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <span class="anat">5</span>
       <div class="panel-h"><h2>Temperatura por nodo · últimas 24 h</h2><span>una celda por hora</span></div>
       <div class="heat-wrap"><div class="heat" id="heat"></div></div>
-      <div class="heat-scale"><span>14 °C</span><i style="background:linear-gradient(90deg,#1b2a44,#2b5a7a,#4a9a8c,#d9b45a,#fb923c,#f87171)"></i><span>32 °C</span><span style="display:inline-flex;align-items:center;gap:6px"><b style="display:inline-block;width:14px;height:10px;border-radius:2px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 3px,var(--surface) 3px 6px)"></b>sin datos</span></div>
+      <div class="heat-scale"><span>14 °C</span><i></i><span>32 °C</span><span class="sin-datos"><b></b>sin datos</span></div>
     </div>
     <div class="panel" data-n>
       <span class="anat">6</span>
@@ -321,325 +178,9 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
   </div>
 </footer>
 
-<script>
-(() => {
-  "use strict";
-  const $ = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const fmt = (v, d) => Number(v).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const pad = n => String(n).padStart(2, "0");
-
-  const ICONS = {
-    temp: '<path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/><path d="M11.5 17.5V10"/>',
-    hum: '<path d="M12 2.7s-6 6.6-6 11.3a6 6 0 0 0 12 0c0-4.7-6-11.3-6-11.3z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
-    aire: '<path d="M3 8h10a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h7"/>',
-    luz: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
-    ruido: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
-    presencia: '<circle cx="12" cy="7" r="3"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><path d="M3.5 10a9 9 0 0 1 1.6-4.5M20.5 10a9 9 0 0 0-1.6-4.5"/>',
-    consumo: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
-    suelo: '<path d="M12 21v-9"/><path d="M12 12c0-4-3-6-7-6 0 4 3 6 7 6z"/><path d="M12 10c0-3.5 2.5-6 7-6 0 4-3 6-7 6z"/><path d="M5 21h14"/>',
-    red: '<path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M12 19.5h.01"/>',
-    ok: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
-    warn: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16.5h.01"/>',
-    bad: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
-    off: '<path d="M8.5 16a5 5 0 0 1 7 0M12 19.5h.01M3 3l18 18M5 12.5a10 10 0 0 1 3.5-2.2M2 8.8a15 15 0 0 1 4.2-2.9M10 5.1A15 15 0 0 1 22 8.8"/>',
-    nodes: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
-    msg: '<path d="M4 5h16v11H8l-4 4z"/>',
-    arrow: '<path d="M7 17 17 7M8 7h9v9"/>',
-    doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
-    code: '<path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/>',
-    chart: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/>'
-  };
-  const icon = (n, cls = "ic") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
-
-  /* ---------------- nodos (mismos que la plantilla y la guía) ---------------- */
-  const enClase = h => h >= 8 && h < 17;
-  const bump = (h, c, w) => Math.exp(-((h - c) ** 2) / (2 * w * w));
-  const NODOS = {
-    aire:      { equipo: 1, nombre: "Calidad de aire", sector: "Aula Taller", corto: "Aula Taller", slug: "aula-taller", piso: 0, sensor: "MQ-7", variable: "CO", unidad: "ppm", icon: "aire", color: "var(--c-aire)", hex: "#a3e635", min: 0, max: 50, dec: 0, tipo: "max", u: { a: 9, b: 35 }, x: 559, y: 92, tOff: 2.2,
-      serie: (h, r) => 3 + (enClase(h) ? 5 : 0) + 30 * bump(h, 10.5, .9) + 9 * bump(h, 14.5, 1) + r() * 2 },
-    luz:       { equipo: 2, nombre: "Luminosidad", sector: "Aula 1", corto: "Aula 1", slug: "aula-1", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 270, y: 362, piso: 0, tOff: 0,
-      serie: (h, r) => Math.max(0, 140 * Math.sin((h - 6) * Math.PI / 13)) + (enClase(h) ? 330 : 0) + r() * 25 },
-    presencia: { equipo: 3, nombre: "Presencia", sector: "Lab. de Informática 3", corto: "Info 3 · presencia", slug: "lab-info-3", sensor: "PIR HC-SR501", variable: "Detecciones", unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", x: 500, y: 92, piso: 1, tOff: .6,
-      serie: (h, r) => enClase(h) ? 22 + r() * 22 : (h === 21 ? 4 : 0) },
-    luz3:      { equipo: 3, base: "luz", nombre: "Luminosidad", sector: "Lab. de Informática 3", corto: "Info 3 · luz", slug: "lab-info-3", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 600, y: 92, piso: 1, tOff: .6,
-      serie: (h, r) => (enClase(h) ? 420 + r() * 60 : 0) + Math.max(0, 60 * Math.sin((h - 6) * Math.PI / 13)) + (h === 21 ? 380 : 0) },
-    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Lab. de Informática 3", corto: "Info 3 · consumo", slug: "lab-info-3", piso: 1, sensor: "SCT-013 · 18 PC, proyector y 4 luces", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 4500, dec: 0, tipo: "max", u: { a: 3000, b: 3600 }, x: 700, y: 92, tOff: 3.4,
-      // 18 PC (~110 W c/u en uso, ~5 W en reposo) + proyector (~250 W) + 4 luces LED de techo (~40 W c/u)
-      serie: (h, r) => enClase(h) ? 18 * (95 + r() * 30) + 160 + (h >= 10 && h < 16 ? 250 : 0) + 900 * bump(h, 14, .45) : 18 * 5 + 30 + (h === 21 ? 160 : 0) + r() * 15 },
-    ruido:     { equipo: 5, nombre: "Nivel sonoro", sector: "Hall central", corto: "Hall central", slug: "hall-central", sensor: "KY-037", variable: "Ruido", unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, x: 395, y: 212, piso: 0, tOff: -.8,
-      serie: (h, r) => 36 + (enClase(h) ? 14 : 0) + 22 * bump(h, 10, .35) + 20 * bump(h, 12.5, .4) + 18 * bump(h, 15, .35) + r() * 4 },
-    suelo:     { equipo: 6, nombre: "Humedad de suelo", sector: "Patio / huerta", corto: "Huerta", slug: "huerta", sensor: "Capacitivo v1.2", variable: "Suelo", unidad: "%", icon: "suelo", color: "var(--c-suelo)", hex: "#d4a373", min: 0, max: 100, dec: 0, tipo: "rango", u: { n: [40, 70], a: [25, 85] }, x: 865, y: 222, piso: 0, tOff: -3.5, exterior: true,
-      serie: (h, r) => (h < 9 ? 46 - h * 1.6 : 78 - (h - 9) * 2.1) + (r() - .5) * 1.5 },
-    red:       { equipo: 7, nombre: "Estado de red", sector: "Sala de servidores", corto: "Servidores", slug: "servidores", sensor: "ESP32 (ping + RSSI)", variable: "Latencia", unidad: "ms", icon: "red", color: "var(--c-red)", hex: "#2dd4bf", min: 0, max: 250, dec: 0, tipo: "max", u: { a: 50, b: 150 }, x: 72, y: 92, piso: 1, tOff: 1.2,
-      serie: (h, r) => 14 + r() * 10 + (enClase(h) ? 12 : 0) + 95 * bump(h, 11, .4) + 170 * bump(h, 15, .3) }
-  };
-  const ORDEN = ["aire", "luz", "presencia", "luz3", "consumo", "ruido", "suelo", "red"];
-  const NIVEL = [{ k: "ok", t: "Normal", i: "ok" }, { k: "warn", t: "Atención", i: "warn" }, { k: "bad", t: "Alerta", i: "bad" }];
-
-  function estado(n, v, h) {
-    if (n.tipo === "max") return v < n.u.a ? 0 : v < n.u.b ? 1 : 2;
-    if (n.tipo === "rango") return (v >= n.u.n[0] && v <= n.u.n[1]) ? 0 : (v >= n.u.a[0] && v <= n.u.a[1]) ? 1 : 2;
-    if (n.tipo === "presencia") return (v > 0 && !(h >= 7 && h < 18)) ? 2 : 0;
-    return 0;
-  }
-  function textoEstado(n, lvl, v) {
-    if (n.tipo === "presencia") return lvl === 2 ? "Fuera de horario" : (v > 0 ? "Ocupada" : "Libre");
-    if (n.slug === "huerta" && v < n.u.n[0]) return lvl === 2 ? "Regar ya" : "Regar pronto";
-    if (n.icon === "aire" && lvl > 0) return "Ventilar";
-    return NIVEL[lvl].t;
-  }
-
-  function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-  const nowH = new Date().getHours();
-  const horas = Array.from({ length: 24 }, (_, i) => (nowH - 23 + i + 24) % 24);
-  const S = {};
-  ORDEN.forEach((k, idx) => {
-    const n = NODOS[k], r = rng(idx * 97 + 16), r2 = rng(idx * 31 + 7);
-    S[k] = {
-      main: horas.map(h => Math.min(n.max, Math.max(n.min, n.serie(h, r)))),
-      temp: horas.map(h => 20 + n.tOff + 4 * Math.sin((h - 10) * Math.PI / 12) + (enClase(h) && !n.exterior ? 1.4 : 0) + (r2() - .5) * .8),
-      hum: horas.map(h => 52 - 9 * Math.sin((h - 10) * Math.PI / 12) + (n.exterior ? 8 : 0) + (r2() - .5) * 3),
-      ago: n.offline ? 7 * 60 + 12 : Math.floor(r2() * 8)
-    };
-  });
-  const val = k => S[k].main[23];
-  const nivelDe = k => NODOS[k].offline ? -1 : estado(NODOS[k], val(k), nowH);
-  const valTxt = k => fmt(val(k), NODOS[k].dec);
-  const agoTxt = s => s < 60 ? `hace ${s} s` : `hace ${Math.floor(s / 60)} min`;
-  const pill = (lvl, txt) => lvl < 0 ? `<span class="pill off">${icon("off", "ic-sm")}Sin datos</span>` : `<span class="pill ${NIVEL[lvl].k}">${icon(NIVEL[lvl].i, "ic-sm")}${esc(txt || NIVEL[lvl].t)}</span>`;
-  const stateColor = lvl => lvl < 0 ? "var(--off)" : `var(--${NIVEL[lvl].k})`;
-
-  /* ---------------- render ---------------- */
-  function spark(vals, color) {
-    const w = 120, h = 40, p = 3, mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
-    const pts = vals.map((v, i) => [p + i * (w - 2 * p) / (vals.length - 1), h - p - (v - mn) / rg * (h - 2 * p)]);
-    const d = pts.map((q, i) => (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1)).join(" ");
-    const l = pts[pts.length - 1];
-    return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${d} L${l[0].toFixed(1)} ${h} L${p} ${h} Z" fill="${color}" fill-opacity=".12"/><path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${l[0].toFixed(1)}" cy="${l[1].toFixed(1)}" r="2.8" fill="${color}"/></svg>`;
-  }
-
-  function renderKpis() {
-    const online = ORDEN.filter(k => !NODOS[k].offline);
-    const activas = ORDEN.filter(k => nivelDe(k) > 0).length + ORDEN.filter(k => NODOS[k].offline).length;
-    const tProm = online.reduce((a, k) => a + S[k].temp[23], 0) / online.length;
-    const hProm = online.reduce((a, k) => a + S[k].hum[23], 0) / online.length;
-    const K = [
-      ["nodes", "var(--ok)", "Nodos en línea", `${online.length}<small>/ ${ORDEN.length}</small>`, ORDEN.filter(k => NODOS[k].offline).map(k => NODOS[k].corto + " sin datos").join(", ") || "Todos reportando"],
-      ["bell", activas ? "var(--bad)" : "var(--ok)", "Alertas activas", `${activas}`, activas ? "Ver el semáforo por sector" : "Sin alertas"],
-      ["temp", "var(--c-temp)", "Temperatura promedio", `${fmt(tProm, 1)}<small>°C</small>`, "Interior, nodos en línea"],
-      ["hum", "var(--c-hum)", "Humedad promedio", `${fmt(hProm, 0)}<small>%</small>`, "Relativa, nodos en línea"],
-      ["msg", "var(--accent)", "Mensajes MQTT", `${online.length * 12}<small>/ min</small>`, "Un mensaje cada 5 s por nodo"]
-    ];
-    $("#kpis").innerHTML = '<span class="anat">1</span>' + K.map(([i, c, t, v, s]) => `<div class="kpi" style="--c:${c}"><div class="kpi-top"><span class="ib">${icon(i, "ic-sm")}</span>${t}</div><div class="kpi-val">${v}</div><div class="kpi-sub">${esc(s)}</div></div>`).join("");
-  }
-
-  function renderMap() {
-    const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" ${o.mid ? 'text-anchor="middle"' : ""} font-size="${o.size || 12}" fill="${o.fill || "var(--text-3)"}" ${o.op ? `opacity="${o.op}"` : ""} font-family="Geist Mono, monospace">${txt}</text>`;
-    const room = (x, y, w, h, label, opts = {}) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${opts.fill || "var(--surface-2)"}" stroke="var(--border-strong)" ${opts.dash ? 'stroke-dasharray="6 5"' : ""}/>` + T(x + 12, y + 22, label) + (opts.note ? T(x + w / 2, y + h / 2 + 8, opts.note, { mid: true, size: 11, op: .7 }) : "");
-    const server = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-dasharray="6 5"/>` + T(x + 12, y + 22, "SALA DE SERVIDORES", { fill: "var(--accent)" });
-    const riser = (x, y, txt) => `<g><rect x="${x - 14}" y="${y - 14}" width="28" height="28" rx="7" fill="var(--surface-3)" stroke="var(--border-strong)"/><path d="M${x} ${y + 7}V${y - 7}M${x - 5} ${y - 2}l5-5 5 5" fill="none" stroke="var(--text-2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>${T(x + 22, y + 4, txt, { size: 10.5 })}</g>`;
-    const link = (n, to) => `<line x1="${n.x}" y1="${n.y}" x2="${to.x}" y2="${to.y}" stroke="${n.offline ? "var(--off)" : "var(--border-strong)"}" stroke-dasharray="${n.offline ? "2 6" : "4 4"}" stroke-width="1.3"/>`;
-    const nodo = k => {
-      const n = NODOS[k], lvl = nivelDe(k), col = stateColor(lvl);
-      const lab = n.offline ? "sin datos" : `${valTxt(k)} ${n.unidad}`;
-      let g = `<g class="node-g" data-k="${k}" tabindex="0" role="button" aria-label="${esc(n.nombre)}, ${esc(n.sector)}: ${esc(lab)}">`;
-      if (!n.offline && !reduceMotion) g += `<circle class="halo" cx="${n.x}" cy="${n.y}" r="18" fill="none" stroke="${col}" stroke-width="2"/>`;
-      g += `<circle class="ring" cx="${n.x}" cy="${n.y}" r="19" fill="var(--bg)" stroke="${col}" stroke-width="2.4"/>`;
-      g += `<g transform="translate(${n.x - 10} ${n.y - 10}) scale(.8333)" fill="none" stroke="${n.offline ? "var(--off)" : n.hex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n.icon]}</g>`;
-      g += `<rect x="${n.x - 46}" y="${n.y + 25}" width="92" height="22" rx="11" fill="var(--bg)" stroke="var(--border)"/>` + T(n.x, n.y + 40, esc(lab), { mid: true, size: 11.5, fill: n.offline ? "var(--text-3)" : "var(--text)" });
-      return g + `</g>`;
-    };
-    const del = p => ORDEN.filter(k => NODOS[k].piso === p);
-    const piso = (titulo, svg) => `<div class="floor"><p class="floor-h"><b>${titulo}</b></p>${svg}</div>`;
-
-    // ---------- Planta baja ----------
-    const RB = { x: 60, y: 62 };
-    let pb = `<svg viewBox="0 0 960 460" role="img" aria-label="Planta baja con el estado de cada nodo">`;
-    pb += `<rect x="20" y="20" width="750" height="435" rx="16" fill="none" stroke="var(--border)" stroke-width="2"/>`;
-    pb += room(322, 30, 146, 135, "MULTI", { fill: "var(--surface)", note: "sin nodo" }) + room(478, 30, 162, 135, "AULA TALLER");
-    pb += room(30, 178, 730, 84, "HALL CENTRAL", { fill: "var(--surface)" });
-    pb += `<line x1="760" y1="220" x2="790" y2="220" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="3 4"/>` + T(775, 212, "salida", { mid: true, size: 9.5 });
-    pb += room(150, 275, 240, 170, "AULA 1") + room(400, 275, 240, 170, "AULA 2", { note: "sin nodo" });
-    pb += `<rect x="790" y="20" width="150" height="435" rx="14" fill="rgba(212,163,115,.06)" stroke="var(--c-suelo)" stroke-opacity=".55" stroke-dasharray="6 5"/>` + T(802, 44, "PATIO / HUERTA") + T(802, 60, "exterior", { size: 10.5, op: .75 });
-    del(0).forEach(k => { pb += link(NODOS[k], RB); });
-    pb += riser(RB.x, RB.y, "al servidor · 1er piso");
-    del(0).forEach(k => { pb += nodo(k); });
-    pb += "</svg>";
-
-    // ---------- Primer piso ----------
-    const SRV = { x: 152, y: 100 }, R1 = { x: 60, y: 200 };
-    let p1 = `<svg viewBox="0 0 960 250" role="img" aria-label="Primer piso con el estado de cada nodo">`;
-    p1 += `<rect x="20" y="20" width="750" height="220" rx="16" fill="none" stroke="var(--border)" stroke-width="2"/>`;
-    p1 += server(30, 30, 160, 135);
-    p1 += room(200, 30, 110, 135, "LAB. INFO 1", { note: "sin nodo" }) + room(320, 30, 110, 135, "LAB. INFO 2", { note: "sin nodo" }) + room(440, 30, 320, 135, "LABORATORIO DE INFORMÁTICA 3");
-    p1 += room(30, 178, 730, 52, "", { fill: "var(--surface)" }) + T(395, 209, "PASILLO", { mid: true });
-    del(1).forEach(k => { p1 += link(NODOS[k], SRV); });
-    p1 += `<line x1="${R1.x}" y1="${R1.y}" x2="${SRV.x}" y2="${SRV.y}" stroke="var(--border-strong)" stroke-dasharray="4 4" stroke-width="1.3"/>`;
-    p1 += riser(R1.x, R1.y, "desde planta baja");
-    p1 += `<g><rect x="${SRV.x - 26}" y="${SRV.y - 20}" width="52" height="40" rx="8" fill="var(--surface-3)" stroke="var(--accent)"/>` + T(SRV.x, SRV.y + 4, "MQTT", { mid: true, size: 10.5, fill: "var(--text)" }) + T(SRV.x, SRV.y + 36, "servidor", { mid: true, size: 10.5 }) + `</g>`;
-    del(1).forEach(k => { p1 += nodo(k); });
-    p1 += "</svg>";
-
-    $("#map").innerHTML = piso("Primer piso", p1) + piso("Planta baja", pb);
-  }
-
-  function renderSectors() {
-    const order = ORDEN.slice().sort((a, b) => {
-      const la = nivelDe(a), lb = nivelDe(b), ra = la < 0 ? 1.5 : la, rb = lb < 0 ? 1.5 : lb;
-      return rb - ra;
-    });
-    $("#sectors").innerHTML = order.map(k => {
-      const n = NODOS[k], lvl = nivelDe(k);
-      const v = n.offline ? `<span class="v" style="color:var(--text-3)">--</span>` : `<span class="v">${valTxt(k)}<small>${esc(n.unidad)}</small></span>`;
-      return `<li style="--c:${n.color}"><span class="stripe" style="background:${stateColor(lvl)}"></span><span class="ib">${icon(n.icon, "ic-sm")}</span><span style="min-width:0"><strong>${esc(n.sector)}</strong><span class="meta">${esc(n.nombre)} · Equipo ${n.equipo} · ${agoTxt(S[k].ago)}</span></span><span class="right">${v}${pill(lvl, lvl >= 0 ? textoEstado(n, lvl, val(k)) : null)}</span></li>`;
-    }).join("");
-  }
-
-  function renderNodes() {
-    $("#nodes").innerHTML = '<span class="anat">4</span>' + ORDEN.map(k => {
-      const n = NODOS[k], lvl = nivelDe(k), d = S[k];
-      const valHtml = n.offline ? `--<small>${esc(n.unidad)}</small>` : (n.tipo === "presencia" ? `${val(k) > 0 ? "Ocupada" : "Libre"}<small>${valTxt(k)} det/h</small>` : `${valTxt(k)}<small>${esc(n.unidad)}</small>`);
-      return `<article class="ncard${n.offline ? " is-off" : ""}" id="card-${k}" style="--c:${n.color}">
-        <div class="nc-top"><span class="ib">${icon(n.icon)}</span><div style="min-width:0"><h3>${esc(n.nombre)}</h3><p>${esc(n.sector)} · ${esc(n.sensor)}</p></div><span class="team-tag">Equipo ${n.equipo}</span></div>
-        <div class="nc-mid"><div class="nc-val${n.tipo === "presencia" && !n.offline ? " txt" : ""}">${valHtml}</div>${spark(d.main.slice(n.offline ? -16 : -12, n.offline ? -4 : undefined), n.offline ? "#6c7890" : n.hex)}</div>
-        <div class="nc-env"><span><span class="t">${icon("temp", "ic-sm")}</span>${n.offline ? "--" : fmt(d.temp[23], 1)} °C</span><span><span class="h">${icon("hum", "ic-sm")}</span>${n.offline ? "--" : fmt(d.hum[23], 0)} %</span></div>
-        <div class="nc-foot"><span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pill(lvl, lvl >= 0 ? textoEstado(n, lvl, val(k)) : null)}<span class="ago" data-ago="${k}">${agoTxt(d.ago)}</span></span><a class="btn go" href="index.html#dashboard" data-open="${n.base || k}">Abrir dashboard ${icon("arrow", "ic-sm")}</a></div>
-      </article>`;
-    }).join("");
-  }
-
-  function heatColor(t) {
-    const stops = [[14, [27, 42, 68]], [18, [43, 90, 122]], [21, [74, 154, 140]], [25, [217, 180, 90]], [28, [251, 146, 60]], [32, [248, 113, 113]]];
-    t = Math.max(14, Math.min(32, t));
-    for (let i = 1; i < stops.length; i++) {
-      if (t <= stops[i][0]) {
-        const [t0, c0] = stops[i - 1], [t1, c1] = stops[i], f = (t - t0) / (t1 - t0);
-        return `rgb(${c0.map((c, j) => Math.round(c + (c1[j] - c) * f)).join(",")})`;
-      }
-    }
-    return "rgb(248,113,113)";
-  }
-  function renderHeat() {
-    let s = `<span></span>` + horas.map((h, i) => `<span class="hr${i === 23 ? " last" : ""}">${i === 23 ? "ya" : (i % 3 === 2 && i < 21 ? pad(h) + " h" : "")}</span>`).join("");
-    ORDEN.forEach(k => {
-      const n = NODOS[k];
-      s += `<span class="lab" style="--c:${n.color}">${icon(n.icon, "ic-sm")}${esc(n.corto)}</span>`;
-      S[k].temp.forEach((t, i) => {
-        const na = n.offline && i >= 20;
-        s += na ? `<span class="cell na" title="${esc(n.corto)} ${pad(horas[i])} h: sin datos"></span>` : `<span class="cell" style="background:${heatColor(t)}" title="${esc(n.corto)} ${pad(horas[i])} h: ${fmt(t, 1)} °C"></span>`;
-      });
-    });
-    $("#heat").innerHTML = s;
-  }
-
-  const feed = [];
-  function hhmm(d = new Date()) { return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
-  function addAlert(lvlKey, k, title, detail, when) {
-    feed.unshift({ lvlKey, k, title, detail, when: when || hhmm() });
-    feed.length = Math.min(feed.length, 9);
-  }
-  function renderFeed() {
-    $("#feed").innerHTML = feed.map(a => {
-      const n = NODOS[a.k];
-      const ic = a.lvlKey === "off" ? "off" : a.lvlKey === "ok" ? "ok" : a.lvlKey === "warn" ? "warn" : "bad";
-      return `<li class="${a.lvlKey}">${icon(ic, "ic-sm")}<span>${esc(a.title)}<small>${esc(n.sector)} · ${esc(a.detail)}</small></span><span class="t">${a.when}</span></li>`;
-    }).join("");
-    const act = ORDEN.filter(k => nivelDe(k) > 0).length + ORDEN.filter(k => NODOS[k].offline).length;
-    $("#alertCount").textContent = `${act} activas`;
-  }
-  // historial inicial
-  (() => {
-    const base = new Date();
-    const at = m => { const d = new Date(base.getTime() - m * 60000); return hhmm(d); };
-    addAlert("ok", "ruido", "Ruido normalizado", "volvió a menos de 55 dB", at(52));
-    addAlert("warn", "red", "Latencia alta", "92 ms al servidor", at(38));
-    addAlert("ok", "red", "Latencia normalizada", "21 ms al servidor", at(31));
-    addAlert("off", "consumo", "Nodo desconectado", "sin datos hace más de 5 min", at(64));
-    addAlert("ok", "consumo", "Nodo reconectado", "volvió a publicar", at(57));
-    ORDEN.forEach(k => { const l = nivelDe(k); if (l > 0) addAlert(NIVEL[l].k, k, `${NODOS[k].variable} ${valTxt(k)} ${NODOS[k].unidad}`, textoEstado(NODOS[k], l, val(k)), at(1)); });
-  })();
-
-  function renderTeams() {
-    const equipos = [...new Set(ORDEN.map(k => NODOS[k].equipo))].sort((x, y) => x - y);
-    const peor = ks => ks.map(nivelDe).reduce((m, l) => (l < 0 ? 1.5 : l) > (m < 0 ? 1.5 : m) ? l : m, 0);
-    $("#teams").innerHTML = `<thead><tr><th>Equipo</th><th>Nodo</th><th>Sector</th><th>Estado</th><th>Publicación</th><th>Accesos</th></tr></thead><tbody>` + equipos.map(eq => {
-      const ks = ORDEN.filter(k => NODOS[k].equipo === eq), n = NODOS[ks[0]], lvl = peor(ks);
-      const kp = ks[0];
-      const pub = eq % 3 === 0 ? `<span class="pill warn">${icon("warn", "ic-sm")}En desarrollo</span>` : `<span class="pill ok">${icon("ok", "ic-sm")}Publicado</span>`;
-      const ref = ks.find(k => nivelDe(k) === lvl) || kp;
-      return `<tr style="--c:${n.color}">
-        <td><div class="who"><span class="ib">${icon(n.icon, "ic-sm")}</span><div><b>Equipo ${eq}</b><span>4 integrantes · 6to Informática</span></div></div></td>
-        <td>${ks.map(k => esc(NODOS[k].nombre)).join(" + ")}<br><span style="font-size:12.5px;color:var(--text-3)">${ks.map(k => esc(NODOS[k].sensor)).join(" + ")}</span></td>
-        <td>${esc(n.sector)}</td>
-        <td>${pill(lvl, lvl >= 0 ? textoEstado(NODOS[ref], lvl, val(ref)) : null)}</td>
-        <td>${pub}</td>
-        <td><div class="links"><a class="btn go" href="index.html#dashboard" data-open="${n.base || kp}">${icon("chart", "ic-sm")}Dashboard</a><a class="btn" href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">${icon("doc", "ic-sm")}Documentación</a><a class="btn" href="https://github.com/lpedaci/sexto-proyecto2026" target="_blank" rel="noopener">${icon("code", "ic-sm")}Código</a></div></td>
-      </tr>`;
-    }).join("") + "</tbody>";
-  }
-
-  function renderAll() { renderKpis(); renderMap(); renderSectors(); renderNodes(); renderFeed(); }
-
-  /* ---------------- interacción ---------------- */
-  // "Abrir dashboard": la guía lee el nodo elegido desde localStorage
-  document.addEventListener("click", e => {
-    const a = e.target.closest("[data-open]");
-    if (a) { try { localStorage.setItem("orient-nodo", JSON.stringify(a.dataset.open)); } catch (err) {} }
-  });
-  function focusCard(k) {
-    const c = document.getElementById("card-" + k); if (!c) return;
-    c.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-    c.classList.add("hl"); setTimeout(() => c.classList.remove("hl"), 1600);
-  }
-  $("#map").addEventListener("click", e => { const g = e.target.closest(".node-g"); if (g) focusCard(g.dataset.k); });
-  $("#map").addEventListener("keydown", e => { const g = e.target.closest(".node-g"); if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); focusCard(g.dataset.k); } });
-  $("#btnNotes").addEventListener("click", e => {
-    const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
-    e.currentTarget.setAttribute("aria-pressed", on);
-    e.currentTarget.textContent = on ? "Ocultar notas de diseño" : "Ver notas de diseño";
-    $("#board").classList.toggle("show-notes", on);
-  });
-
-  /* ---------------- tiempo real (simulado) ---------------- */
-  let sinceMsg = 0, tick = 0;
-  function clock() { const d = new Date(); $("#clock").textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
-  clock();
-  setInterval(() => {
-    clock(); tick++; sinceMsg++;
-    ORDEN.forEach(k => { S[k].ago++; });
-    if (tick % 2 === 0) {
-      // llega un mensaje de un nodo al azar
-      const online = ORDEN.filter(k => !NODOS[k].offline);
-      const k = online[Math.floor(Math.random() * online.length)], n = NODOS[k], d = S[k];
-      const prevLvl = nivelDe(k);
-      if (n.tipo === "presencia") d.main[23] = Math.max(0, Math.round(d.main[23] + (Math.random() - .5) * 4));
-      else d.main[23] = Math.min(n.max, Math.max(n.min, d.main[23] + (Math.random() - .5) * (n.max - n.min) * .03));
-      d.temp[23] += (Math.random() - .5) * .2; d.hum[23] += (Math.random() - .5) * .8;
-      d.ago = 0; sinceMsg = 0;
-      const lvl = nivelDe(k);
-      if (lvl !== prevLvl) addAlert(lvl === 0 ? "ok" : NIVEL[lvl].k, k, lvl === 0 ? `${n.variable} normalizado` : `${n.variable} ${valTxt(k)} ${n.unidad}`, lvl === 0 ? "volvió al rango normal" : textoEstado(n, lvl, val(k)));
-      renderAll();
-      const card = document.getElementById("card-" + k);
-      if (card && !reduceMotion) { card.classList.add("flash"); setTimeout(() => card.classList.remove("flash"), 900); }
-    } else {
-      $$("[data-ago]").forEach(el => { el.textContent = agoTxt(S[el.dataset.ago].ago); });
-    }
-    $("#lastMsg").textContent = `último mensaje hace ${sinceMsg} s`;
-  }, 1000);
-
-  /* ---------------- menú activo ---------------- */
-  if ("IntersectionObserver" in window) {
-    const links = $$(".top nav a");
-    const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id)); }), { rootMargin: "-40% 0px -55% 0px" });
-    ["resumen", "mapa", "nodos", "alertas", "equipos"].forEach(id => io.observe(document.getElementById(id)));
-  }
-
-  renderAll(); renderHeat(); renderTeams();
-})();
-</script>
+<script src="assets/js/comun/utilidades.js"></script>
+<script src="assets/js/comun/iconos.js"></script>
+<script src="assets/js/tablero/datos.js"></script>
+<script src="assets/js/tablero/app.js"></script>
 </body>
 </html>

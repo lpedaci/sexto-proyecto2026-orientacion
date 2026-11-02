@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lpedaci.github.io/sexto-proyecto2026-orientacion/sitemap.xml
