@@ -975,7 +975,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
       unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, grafico: "area",
       nota: "Un aula de clase necesita alrededor de 300 a 500 lx en el plano de trabajo. Luz encendida fuera de horario es un buen caso de alerta.",
       serie: (h, r) => Math.max(0, 140 * Math.sin((h - 6) * Math.PI / 13)) + (enClase(h) ? 330 : 0) + (h === 19 || h === 20 ? 320 : 0) + r() * 25 },
-    ruido: { nombre: "Nivel sonoro", corto: "Ruido (dB)", sensor: "KY-037", lugar: "Pasillo / SUM", sector: "sum", variable: "Nivel sonoro", clave: "db",
+    ruido: { nombre: "Nivel sonoro", corto: "Ruido (dB)", sensor: "KY-037", lugar: "Hall central", sector: "hall-central", variable: "Nivel sonoro", clave: "db",
       unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, grafico: "area",
       nota: "El KY-037 estima el nivel: calibrenlo contra un decibelímetro (puede ser una app). Los recreos marcan picos claros.",
       serie: (h, r) => 36 + (enClase(h) ? 14 : 0) + 22 * bump(h, 10, .35) + 20 * bump(h, 12.5, .4) + 18 * bump(h, 15, .35) + r() * 4 },
