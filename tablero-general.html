@@ -107,8 +107,12 @@ main { padding-block: 28px 56px; display: grid; gap: 22px; }
 /* Mapa + semáforo */
 .row-2 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 1000px) { .row-2 { grid-template-columns: 1fr; } }
-.map-wrap { overflow-x: auto; }
+.map-wrap { display: grid; gap: 14px; }
 .map-wrap svg { width: 100%; min-width: 600px; height: auto; display: block; }
+.floor { min-width: 0; overflow-x: auto; }
+.floor-h { display: flex; align-items: center; gap: 8px; font: 500 11.5px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+.floor-h b { color: var(--text-2); font-weight: 500; }
+.floor-h::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 .map-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--text-2); margin-top: 10px; }
 .map-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
 .node-g { cursor: pointer; }
@@ -247,7 +251,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <section class="row-2" id="mapa">
     <div class="panel" data-n>
       <span class="anat">2</span>
-      <div class="panel-h"><h2>Mapa del campus</h2><span>Topología en estrella · tocá un nodo para ver su tarjeta</span></div>
+      <div class="panel-h"><h2>Mapa del campus</h2><span>Dos plantas · topología en estrella · tocá un nodo para ver su tarjeta</span></div>
       <div class="map-wrap" id="map"></div>
       <div class="map-legend"><span><i style="background:var(--ok)"></i>Normal</span><span><i style="background:var(--warn)"></i>Atención</span><span><i style="background:var(--bad)"></i>Alerta</span><span><i style="background:var(--off)"></i>Sin datos</span></div>
     </div>
@@ -353,19 +357,19 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
   const enClase = h => h >= 8 && h < 17;
   const bump = (h, c, w) => Math.exp(-((h - c) ** 2) / (2 * w * w));
   const NODOS = {
-    aire:      { equipo: 1, nombre: "Calidad de aire", sector: "Laboratorio de Hardware", corto: "Lab. Hardware", slug: "lab-hardware", sensor: "MQ-7", variable: "CO", unidad: "ppm", icon: "aire", color: "var(--c-aire)", hex: "#a3e635", min: 0, max: 50, dec: 0, tipo: "max", u: { a: 9, b: 35 }, x: 256, y: 92, tOff: 2.2,
+    aire:      { equipo: 1, nombre: "Calidad de aire", sector: "Aula Taller", corto: "Aula Taller", slug: "aula-taller", piso: 0, sensor: "MQ-7", variable: "CO", unidad: "ppm", icon: "aire", color: "var(--c-aire)", hex: "#a3e635", min: 0, max: 50, dec: 0, tipo: "max", u: { a: 9, b: 35 }, x: 559, y: 92, tOff: 2.2,
       serie: (h, r) => 3 + (enClase(h) ? 5 : 0) + 30 * bump(h, 10.5, .9) + 9 * bump(h, 14.5, 1) + r() * 2 },
-    luz:       { equipo: 2, nombre: "Luminosidad", sector: "Aula 1", corto: "Aula 1", slug: "aula-1", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 150, y: 362, tOff: 0,
+    luz:       { equipo: 2, nombre: "Luminosidad", sector: "Aula 1", corto: "Aula 1", slug: "aula-1", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 270, y: 362, piso: 0, tOff: 0,
       serie: (h, r) => Math.max(0, 140 * Math.sin((h - 6) * Math.PI / 13)) + (enClase(h) ? 330 : 0) + r() * 25 },
-    presencia: { equipo: 3, nombre: "Presencia", sector: "Aula 2", corto: "Aula 2", slug: "aula-2", sensor: "PIR HC-SR501", variable: "Detecciones", unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", x: 400, y: 362, tOff: .6,
+    presencia: { equipo: 3, nombre: "Presencia", sector: "Aula 2", corto: "Aula 2", slug: "aula-2", sensor: "PIR HC-SR501", variable: "Detecciones", unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", x: 520, y: 362, piso: 0, tOff: .6,
       serie: (h, r) => enClase(h) ? 22 + r() * 22 : (h === 21 ? 4 : 0) },
-    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Sala de Informática", corto: "Sala Informática", slug: "sala-info", sensor: "SCT-013", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, x: 690, y: 92, tOff: 3.4, offline: true,
+    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Lab. de Informática 3", corto: "Lab. Informática 3", slug: "lab-info-3", piso: 1, sensor: "SCT-013", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, x: 620, y: 92, tOff: 3.4, offline: true,
       serie: (h, r) => 160 + (enClase(h) ? 1100 + r() * 300 : r() * 40) + 1250 * bump(h, 14, .5) },
-    ruido:     { equipo: 5, nombre: "Nivel sonoro", sector: "Hall central", corto: "Hall central", slug: "hall-central", sensor: "KY-037", variable: "Ruido", unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, x: 395, y: 212, tOff: -.8,
+    ruido:     { equipo: 5, nombre: "Nivel sonoro", sector: "Hall central", corto: "Hall central", slug: "hall-central", sensor: "KY-037", variable: "Ruido", unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, x: 395, y: 212, piso: 0, tOff: -.8,
       serie: (h, r) => 36 + (enClase(h) ? 14 : 0) + 22 * bump(h, 10, .35) + 20 * bump(h, 12.5, .4) + 18 * bump(h, 15, .35) + r() * 4 },
-    suelo:     { equipo: 6, nombre: "Humedad de suelo", sector: "Patio / huerta", corto: "Huerta", slug: "huerta", sensor: "Capacitivo v1.2", variable: "Suelo", unidad: "%", icon: "suelo", color: "var(--c-suelo)", hex: "#d4a373", min: 0, max: 100, dec: 0, tipo: "rango", u: { n: [40, 70], a: [25, 85] }, x: 865, y: 222, tOff: -3.5, exterior: true,
+    suelo:     { equipo: 6, nombre: "Humedad de suelo", sector: "Patio / huerta", corto: "Huerta", slug: "huerta", sensor: "Capacitivo v1.2", variable: "Suelo", unidad: "%", icon: "suelo", color: "var(--c-suelo)", hex: "#d4a373", min: 0, max: 100, dec: 0, tipo: "rango", u: { n: [40, 70], a: [25, 85] }, x: 865, y: 222, piso: 0, tOff: -3.5, exterior: true,
       serie: (h, r) => (h < 9 ? 46 - h * 1.6 : 78 - (h - 9) * 2.1) + (r() - .5) * 1.5 },
-    red:       { equipo: 7, nombre: "Estado de red", sector: "Sala de servidores", corto: "Servidores", slug: "servidores", sensor: "ESP32 (ping + RSSI)", variable: "Latencia", unidad: "ms", icon: "red", color: "var(--c-red)", hex: "#2dd4bf", min: 0, max: 250, dec: 0, tipo: "max", u: { a: 50, b: 150 }, x: 72, y: 92, tOff: 1.2,
+    red:       { equipo: 7, nombre: "Estado de red", sector: "Sala de servidores", corto: "Servidores", slug: "servidores", sensor: "ESP32 (ping + RSSI)", variable: "Latencia", unidad: "ms", icon: "red", color: "var(--c-red)", hex: "#2dd4bf", min: 0, max: 250, dec: 0, tipo: "max", u: { a: 50, b: 150 }, x: 72, y: 92, piso: 1, tOff: 1.2,
       serie: (h, r) => 14 + r() * 10 + (enClase(h) ? 12 : 0) + 95 * bump(h, 11, .4) + 170 * bump(h, 15, .3) }
   };
   const ORDEN = ["aire", "luz", "presencia", "consumo", "ruido", "suelo", "red"];
@@ -380,7 +384,7 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
   function textoEstado(n, lvl, v) {
     if (n.tipo === "presencia") return lvl === 2 ? "Fuera de horario" : (v > 0 ? "Ocupada" : "Libre");
     if (n.slug === "huerta" && v < n.u.n[0]) return lvl === 2 ? "Regar ya" : "Regar pronto";
-    if (n.slug === "lab-hardware" && lvl > 0) return "Ventilar";
+    if (n.icon === "aire" && lvl > 0) return "Ventilar";
     return NIVEL[lvl].t;
   }
 
@@ -429,34 +433,53 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
   }
 
   function renderMap() {
-    const room = (x, y, w, h, label, opts = {}) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${opts.fill || "var(--surface-2)"}" stroke="var(--border-strong)" ${opts.dash ? 'stroke-dasharray="6 5"' : ""}/><text x="${x + 12}" y="${y + 22}" font-size="12" fill="var(--text-3)" font-family="Geist Mono, monospace">${label}</text>${opts.note ? `<text x="${x + w / 2}" y="${y + h / 2 + 8}" text-anchor="middle" font-size="11" fill="var(--text-3)" opacity=".7" font-family="Geist Mono, monospace">${opts.note}</text>` : ""}`;
-    let s = `<svg viewBox="0 0 960 460" role="img" aria-label="Plano del campus con el estado de cada nodo">`;
-    // Edificio
-    s += `<rect x="20" y="20" width="750" height="435" rx="16" fill="none" stroke="var(--border)" stroke-width="2"/>`;
-    // Lado superior: sala de servidores (esquina, punteada), Lab. Hardware, Multi (centro), Aula Taller, Sala Informática
-    s += `<rect x="30" y="30" width="160" height="135" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-dasharray="6 5"/><text x="42" y="52" font-size="12" fill="var(--accent)" font-family="Geist Mono, monospace">SALA DE SERVIDORES</text>`;
-    s += room(200, 30, 112, 135, "LAB. HARDWARE") + room(322, 30, 146, 135, "MULTI", { fill: "var(--surface)", note: "sin nodo" }) + room(478, 30, 132, 135, "AULA TALLER", { fill: "var(--surface)", note: "sin nodo" }) + room(620, 30, 140, 135, "SALA INFORMÁTICA");
-    // Centro: hall que termina en la salida al patio
-    s += room(30, 178, 730, 84, "HALL CENTRAL", { fill: "var(--surface)" });
-    s += `<line x1="760" y1="220" x2="790" y2="220" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="3 4"/><text x="775" y="212" text-anchor="middle" font-size="9.5" fill="var(--text-3)" font-family="Geist Mono, monospace">salida</text>`;
-    // Lado inferior: Aula 1, Aula 2, Dirección
-    s += room(30, 275, 240, 170, "AULA 1") + room(280, 275, 240, 170, "AULA 2") + room(530, 275, 230, 170, "DIRECCIÓN", { fill: "var(--surface)", note: "sin nodo" });
-    // Exterior: patio al final del hall, fuera del edificio
-    s += `<rect x="790" y="140" width="150" height="165" rx="12" fill="rgba(212,163,115,.06)" stroke="var(--c-suelo)" stroke-opacity=".55" stroke-dasharray="6 5"/><text x="802" y="162" font-size="12" fill="var(--text-3)" font-family="Geist Mono, monospace">PATIO / HUERTA</text><text x="802" y="178" font-size="10.5" fill="var(--text-3)" opacity=".75" font-family="Geist Mono, monospace">exterior</text>`;
-    const SRV = { x: 152, y: 100 };
-    ORDEN.forEach(k => { const n = NODOS[k]; s += `<line x1="${n.x}" y1="${n.y}" x2="${SRV.x}" y2="${SRV.y}" stroke="${n.offline ? "var(--off)" : "var(--border-strong)"}" stroke-dasharray="${n.offline ? "2 6" : "4 4"}" stroke-width="1.3"/>`; });
-    s += `<g><rect x="${SRV.x - 26}" y="${SRV.y - 20}" width="52" height="40" rx="8" fill="var(--surface-3)" stroke="var(--accent)"/><text x="${SRV.x}" y="${SRV.y + 4}" text-anchor="middle" font-size="10.5" fill="var(--text)" font-family="Geist Mono, monospace">MQTT</text><text x="${SRV.x}" y="${SRV.y + 36}" text-anchor="middle" font-size="10.5" fill="var(--text-3)" font-family="Geist Mono, monospace">servidor</text></g>`;
-    ORDEN.forEach(k => {
+    const T = (x, y, txt, o = {}) => `<text x="${x}" y="${y}" ${o.mid ? 'text-anchor="middle"' : ""} font-size="${o.size || 12}" fill="${o.fill || "var(--text-3)"}" ${o.op ? `opacity="${o.op}"` : ""} font-family="Geist Mono, monospace">${txt}</text>`;
+    const room = (x, y, w, h, label, opts = {}) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${opts.fill || "var(--surface-2)"}" stroke="var(--border-strong)" ${opts.dash ? 'stroke-dasharray="6 5"' : ""}/>` + T(x + 12, y + 22, label) + (opts.note ? T(x + w / 2, y + h / 2 + 8, opts.note, { mid: true, size: 11, op: .7 }) : "");
+    const server = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-dasharray="6 5"/>` + T(x + 12, y + 22, "SALA DE SERVIDORES", { fill: "var(--accent)" });
+    const riser = (x, y, txt) => `<g><rect x="${x - 14}" y="${y - 14}" width="28" height="28" rx="7" fill="var(--surface-3)" stroke="var(--border-strong)"/><path d="M${x} ${y + 7}V${y - 7}M${x - 5} ${y - 2}l5-5 5 5" fill="none" stroke="var(--text-2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>${T(x + 22, y + 4, txt, { size: 10.5 })}</g>`;
+    const link = (n, to) => `<line x1="${n.x}" y1="${n.y}" x2="${to.x}" y2="${to.y}" stroke="${n.offline ? "var(--off)" : "var(--border-strong)"}" stroke-dasharray="${n.offline ? "2 6" : "4 4"}" stroke-width="1.3"/>`;
+    const nodo = k => {
       const n = NODOS[k], lvl = nivelDe(k), col = stateColor(lvl);
       const lab = n.offline ? "sin datos" : `${valTxt(k)} ${n.unidad}`;
-      s += `<g class="node-g" data-k="${k}" tabindex="0" role="button" aria-label="${esc(n.nombre)}, ${esc(n.sector)}: ${esc(lab)}">`;
-      if (!n.offline && !reduceMotion) s += `<circle class="halo" cx="${n.x}" cy="${n.y}" r="18" fill="none" stroke="${col}" stroke-width="2"/>`;
-      s += `<circle class="ring" cx="${n.x}" cy="${n.y}" r="19" fill="var(--bg)" stroke="${col}" stroke-width="2.4"/>`;
-      s += `<g transform="translate(${n.x - 10} ${n.y - 10}) scale(.8333)" fill="none" stroke="${n.offline ? "var(--off)" : n.hex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n.icon]}</g>`;
-      s += `<rect x="${n.x - 46}" y="${n.y + 25}" width="92" height="22" rx="11" fill="var(--bg)" stroke="var(--border)"/><text x="${n.x}" y="${n.y + 40}" text-anchor="middle" font-size="11.5" fill="${n.offline ? "var(--text-3)" : "var(--text)"}" font-family="Geist Mono, monospace">${esc(lab)}</text>`;
-      s += `</g>`;
-    });
-    $("#map").innerHTML = s + "</svg>";
+      let g = `<g class="node-g" data-k="${k}" tabindex="0" role="button" aria-label="${esc(n.nombre)}, ${esc(n.sector)}: ${esc(lab)}">`;
+      if (!n.offline && !reduceMotion) g += `<circle class="halo" cx="${n.x}" cy="${n.y}" r="18" fill="none" stroke="${col}" stroke-width="2"/>`;
+      g += `<circle class="ring" cx="${n.x}" cy="${n.y}" r="19" fill="var(--bg)" stroke="${col}" stroke-width="2.4"/>`;
+      g += `<g transform="translate(${n.x - 10} ${n.y - 10}) scale(.8333)" fill="none" stroke="${n.offline ? "var(--off)" : n.hex}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n.icon]}</g>`;
+      g += `<rect x="${n.x - 46}" y="${n.y + 25}" width="92" height="22" rx="11" fill="var(--bg)" stroke="var(--border)"/>` + T(n.x, n.y + 40, esc(lab), { mid: true, size: 11.5, fill: n.offline ? "var(--text-3)" : "var(--text)" });
+      return g + `</g>`;
+    };
+    const del = p => ORDEN.filter(k => NODOS[k].piso === p);
+    const piso = (titulo, svg) => `<div class="floor"><p class="floor-h"><b>${titulo}</b></p>${svg}</div>`;
+
+    // ---------- Planta baja ----------
+    const RB = { x: 60, y: 62 };
+    let pb = `<svg viewBox="0 0 960 460" role="img" aria-label="Planta baja con el estado de cada nodo">`;
+    pb += `<rect x="20" y="20" width="750" height="435" rx="16" fill="none" stroke="var(--border)" stroke-width="2"/>`;
+    pb += room(322, 30, 146, 135, "MULTI", { fill: "var(--surface)", note: "sin nodo" }) + room(478, 30, 162, 135, "AULA TALLER");
+    pb += room(30, 178, 730, 84, "HALL CENTRAL", { fill: "var(--surface)" });
+    pb += `<line x1="760" y1="220" x2="790" y2="220" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="3 4"/>` + T(775, 212, "salida", { mid: true, size: 9.5 });
+    pb += room(150, 275, 240, 170, "AULA 1") + room(400, 275, 240, 170, "AULA 2");
+    pb += `<rect x="790" y="140" width="150" height="165" rx="12" fill="rgba(212,163,115,.06)" stroke="var(--c-suelo)" stroke-opacity=".55" stroke-dasharray="6 5"/>` + T(802, 162, "PATIO / HUERTA") + T(802, 178, "exterior", { size: 10.5, op: .75 });
+    del(0).forEach(k => { pb += link(NODOS[k], RB); });
+    pb += riser(RB.x, RB.y, "al servidor · 1er piso");
+    del(0).forEach(k => { pb += nodo(k); });
+    pb += "</svg>";
+
+    // ---------- Primer piso ----------
+    const SRV = { x: 152, y: 100 }, R1 = { x: 60, y: 200 };
+    let p1 = `<svg viewBox="0 0 960 250" role="img" aria-label="Primer piso con el estado de cada nodo">`;
+    p1 += `<rect x="20" y="20" width="750" height="220" rx="16" fill="none" stroke="var(--border)" stroke-width="2"/>`;
+    p1 += server(30, 30, 160, 135);
+    p1 += room(200, 30, 130, 135, "LAB. INFO 1", { note: "sin nodo" }) + room(340, 30, 130, 135, "LAB. INFO 2", { note: "sin nodo" }) + room(480, 30, 280, 135, "LABORATORIO DE INFORMÁTICA 3");
+    p1 += room(30, 178, 730, 52, "", { fill: "var(--surface)" }) + T(395, 209, "PASILLO", { mid: true });
+    del(1).forEach(k => { p1 += link(NODOS[k], SRV); });
+    p1 += `<line x1="${R1.x}" y1="${R1.y}" x2="${SRV.x}" y2="${SRV.y}" stroke="var(--border-strong)" stroke-dasharray="4 4" stroke-width="1.3"/>`;
+    p1 += riser(R1.x, R1.y, "desde planta baja");
+    p1 += `<g><rect x="${SRV.x - 26}" y="${SRV.y - 20}" width="52" height="40" rx="8" fill="var(--surface-3)" stroke="var(--accent)"/>` + T(SRV.x, SRV.y + 4, "MQTT", { mid: true, size: 10.5, fill: "var(--text)" }) + T(SRV.x, SRV.y + 36, "servidor", { mid: true, size: 10.5 }) + `</g>`;
+    del(1).forEach(k => { p1 += nodo(k); });
+    p1 += "</svg>";
+
+    $("#map").innerHTML = piso("Planta baja", pb) + piso("Primer piso", p1);
   }
 
   function renderSectors() {

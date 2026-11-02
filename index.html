@@ -967,7 +967,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
   };
 
   const NODOS = {
-    aire: { nombre: "Calidad de aire", corto: "Aire (CO)", sensor: "MQ-7", lugar: "Laboratorio de Hardware", sector: "lab-hardware", variable: "Monóxido de carbono", clave: "co_ppm",
+    aire: { nombre: "Calidad de aire", corto: "Aire (CO)", sensor: "MQ-7", lugar: "Aula Taller", sector: "aula-taller", variable: "Monóxido de carbono", clave: "co_ppm",
       unidad: "ppm", icon: "aire", color: "var(--c-aire)", hex: "#a3e635", min: 0, max: 50, dec: 0, tipo: "max", u: { a: 9, b: 35 }, grafico: "area",
       nota: "El MQ-7 necesita precalentamiento y calibración: los valores son orientativos. Mostrá siempre la unidad ppm y el umbral.",
       serie: (h, r) => 3 + (enClase(h) ? 5 : 0) + 30 * bump(h, 10.5, .9) + 9 * bump(h, 14.5, 1) + r() * 2 },
@@ -983,7 +983,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
       unidad: "det/h", icon: "presencia", color: "var(--c-presencia)", hex: "#f472b6", min: 0, max: 60, dec: 0, tipo: "presencia", grafico: "barras",
       nota: "El PIR no identifica personas: solo detecta movimiento. Mostrá Ocupada o Libre en palabras y alertá si hay movimiento fuera de horario.",
       serie: (h, r) => enClase(h) ? 22 + r() * 22 : (h === 21 ? 4 : 0) },
-    consumo: { nombre: "Consumo eléctrico", corto: "Consumo", sensor: "SCT-013 (pinza)", lugar: "Sala de Informática", sector: "sala-info", variable: "Potencia", clave: "w",
+    consumo: { nombre: "Consumo eléctrico", corto: "Consumo", sensor: "SCT-013 (pinza)", lugar: "Lab. de Informática 3", sector: "lab-info-3", variable: "Potencia", clave: "w",
       unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, grafico: "area",
       nota: "Usen pinza no invasiva y nunca intervengan la instalación de 220 V. Además de la potencia, muestren la energía del día en kWh.",
       serie: (h, r) => 160 + (enClase(h) ? 1100 + r() * 300 : r() * 40) + 1250 * bump(h, 14, .5) },
