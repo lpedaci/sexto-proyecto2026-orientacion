@@ -459,7 +459,7 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
     pb += room(30, 178, 730, 84, "HALL CENTRAL", { fill: "var(--surface)" });
     pb += `<line x1="760" y1="220" x2="790" y2="220" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="3 4"/>` + T(775, 212, "salida", { mid: true, size: 9.5 });
     pb += room(150, 275, 240, 170, "AULA 1") + room(400, 275, 240, 170, "AULA 2");
-    pb += `<rect x="790" y="140" width="150" height="165" rx="12" fill="rgba(212,163,115,.06)" stroke="var(--c-suelo)" stroke-opacity=".55" stroke-dasharray="6 5"/>` + T(802, 162, "PATIO / HUERTA") + T(802, 178, "exterior", { size: 10.5, op: .75 });
+    pb += `<rect x="790" y="20" width="150" height="435" rx="14" fill="rgba(212,163,115,.06)" stroke="var(--c-suelo)" stroke-opacity=".55" stroke-dasharray="6 5"/>` + T(802, 44, "PATIO / HUERTA") + T(802, 60, "exterior", { size: 10.5, op: .75 });
     del(0).forEach(k => { pb += link(NODOS[k], RB); });
     pb += riser(RB.x, RB.y, "al servidor · 1er piso");
     del(0).forEach(k => { pb += nodo(k); });
@@ -479,7 +479,7 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
     del(1).forEach(k => { p1 += nodo(k); });
     p1 += "</svg>";
 
-    $("#map").innerHTML = piso("Planta baja", pb) + piso("Primer piso", p1);
+    $("#map").innerHTML = piso("Primer piso", p1) + piso("Planta baja", pb);
   }
 
   function renderSectors() {
