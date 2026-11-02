@@ -8,7 +8,7 @@
 <meta name="description" content="Guía para 6to año: cómo diseñar el dashboard en tema oscuro de cada nodo IoT y cómo armar la documentación del proyecto con la plantilla de la profe.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: consola de instrumentos. Una columna de lectura (max 1180px) con bandas por ruta:
    A = dashboard (demo en vivo arriba), B = documentación (bifurcación Sí/No). Solo tema oscuro, a propósito. */
@@ -81,60 +81,129 @@ code { overflow-wrap: anywhere; font-size: .88em; background: var(--surface-2); 
 /* ---------- Encabezado ---------- */
 .top {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
-  background: rgba(10, 14, 21, .86); backdrop-filter: blur(10px);
+  background: rgba(10, 14, 21, .82); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.top .wrap { height: var(--header-h); display: flex; align-items: center; gap: 20px; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 700; font-stretch: 90%; letter-spacing: .01em; white-space: nowrap; }
-.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
+.top .wrap { height: var(--header-h); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+.brand { justify-self: start; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-family: var(--font-display); font-weight: 700; font-stretch: 90%; letter-spacing: .01em; white-space: nowrap; }
+.brand-mark { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
 .brand small { font-family: var(--font-mono); font-weight: 400; color: var(--text-3); font-size: 12px; margin-left: 4px; }
-.top nav { margin-left: auto; min-width: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
-.top nav a { color: var(--text-2); text-decoration: none; font-size: 14px; padding: 6px 10px; border-radius: 8px; white-space: nowrap; }
-.top nav a:hover { color: var(--text); background: var(--surface-2); }
-@media (max-width: 720px) { .brand small { display: none; } .top nav a.opt { display: none; } }
+.top nav { justify-self: center; min-width: 0; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
+.top nav a { color: var(--text-2); text-decoration: none; font-size: 13.5px; padding: 6px 14px; border-radius: 999px; white-space: nowrap; transition: background .15s, color .15s; }
+.top nav a:hover, .top nav a.on { color: var(--text); background: var(--surface-3); }
+.top-cta { justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--text); color: var(--bg); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.top-cta:hover { background: var(--accent); color: var(--accent-ink); }
+@media (max-width: 900px) { .top .wrap { grid-template-columns: auto minmax(0, 1fr); } .top-cta { display: none; } .top nav { justify-self: end; } .brand small { display: none; } }
+@media (max-width: 560px) { .brand .bt { display: none; } .top nav a.opt { display: none; } .top nav a { padding: 6px 11px; } }
 
 /* ---------- Tipografía ---------- */
 h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
 h1 { font-size: clamp(2.1rem, 5.2vw, 3.6rem); font-weight: 800; font-stretch: 82%; line-height: 1.02; letter-spacing: -.01em; }
-h2 { font-size: clamp(1.6rem, 3.2vw, 2.25rem); font-weight: 750; font-stretch: 85%; line-height: 1.1; }
+h2 { font-size: clamp(1.9rem, 4.2vw, 3.1rem); font-weight: 700; font-stretch: 80%; line-height: 1.02; letter-spacing: -.015em; }
 h3 { font-size: 1.15rem; font-weight: 700; font-stretch: 95%; line-height: 1.25; }
 p { margin: 0; }
-.lead { font-size: 1.12rem; color: var(--text-2); max-width: 62ch; }
+.lead { font-size: 1.12rem; color: var(--text-2); }
 .muted { color: var(--text-2); }
-.eyebrow { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
+.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
 .eyebrow b { color: var(--accent); font-weight: 500; }
 .prose { display: grid; gap: 14px; max-width: 68ch; }
 .prose ul, .prose ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 
-/* ---------- Hero ---------- */
-.hero { padding-block: 56px 40px; border-bottom: 1px solid var(--border); }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px; align-items: end; }
-@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 28px; } }
-.hero h1 em { font-style: normal; color: var(--accent); }
-.hero .lead { margin-top: 18px; }
-.routes { display: grid; gap: 12px; }
-.route {
-  display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
-  padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface);
-  text-decoration: none; color: var(--text); transition: border-color .15s, background .15s;
+/* ---------- Hero: el nodo como producto ---------- */
+.hero { position: relative; padding-block: 56px 72px; border-bottom: 1px solid var(--border); overflow: hidden; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+@media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
+.status-eyebrow { font: 500 12px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 10px; }
+.sig { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(74, 222, 128, .16); flex: none; }
+h1.mega { font-size: clamp(3.3rem, 8.6vw, 6.8rem); font-weight: 700; font-stretch: 76%; line-height: .9; letter-spacing: -.03em; margin-top: 22px; }
+h1.mega span { color: var(--text-3); }
+.hero .lead { margin-top: 24px; max-width: 46ch; }
+.feats { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.feat { display: grid; align-content: start; gap: 4px; padding: 2px 20px; border-left: 1px solid var(--border-strong); text-decoration: none; color: var(--text); }
+.feat:first-child { padding-left: 0; border-left: 0; }
+.feat .fi { color: var(--accent); margin-bottom: 10px; display: block; line-height: 0; }
+.feat strong { font-size: 15px; font-weight: 600; transition: color .15s; }
+.feat span:not(.fi) { font-size: 13.5px; color: var(--text-2); line-height: 1.45; }
+.feat:hover strong { color: var(--accent); }
+@media (max-width: 560px) {
+  .feats { grid-template-columns: 1fr; gap: 18px; }
+  .feat { border-left: 0; padding: 0; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; }
+  .feat .fi { grid-row: span 2; margin: 2px 0 0; }
 }
-.route:hover { border-color: var(--accent); background: var(--surface-2); color: var(--text); }
-.route .tag { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
-.route strong { display: block; font-family: var(--font-display); font-size: 1.15rem; font-stretch: 92%; }
-.route span.d { color: var(--text-2); font-size: 14px; }
-.route .ico { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
-.flow { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-2); }
-.flow span { padding: 4px 9px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
-.flow i { font-style: normal; color: var(--text-3); }
+.hero-foot { margin-top: 44px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; }
+.status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border: 1px solid var(--border-strong); border-radius: 999px; font-size: 13.5px; color: var(--text-2); background: var(--surface); }
+.status-pill b { font: 500 11.5px var(--font-mono); letter-spacing: .14em; color: var(--text); }
+.status-pill em { font-style: normal; color: var(--ok); }
+.go { display: flex; align-items: center; gap: 16px; text-decoration: none; color: var(--text); }
+.go > span { font-size: 14.5px; line-height: 1.35; text-align: right; font-weight: 600; }
+.go > span small { display: block; color: var(--text-2); font-size: 14px; font-weight: 400; }
+.round { width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--border-strong); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s, transform .2s, color .2s; }
+.go:hover { color: var(--text); }
+.go:hover .round { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); transform: translateX(3px); }
+
+.stage { --c: var(--c-aire); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 112px; align-items: center; gap: 12px; }
+.stage::before { content: ""; position: absolute; inset: 4% 22% 4% 0; background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 24%, transparent), transparent); filter: blur(34px); z-index: 0; transition: background .7s; }
+.device {
+  position: relative; z-index: 1; justify-self: center; width: min(400px, 100%); max-width: 100%; aspect-ratio: 1; border-radius: 31%; padding: 15px;
+  background-color: #161d29; background-image: radial-gradient(rgba(255, 255, 255, .085) .8px, transparent 1.15px); background-size: 4px 4px;
+  box-shadow: 0 50px 90px -34px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .05), inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+.device-face {
+  position: relative; height: 100%; border-radius: 28%; padding: 10% 10% 18%;
+  background: linear-gradient(150deg, #232d3e 0%, #131a26 52%, #0c1119 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), inset 0 -24px 40px rgba(0, 0, 0, .35), 0 12px 30px -12px rgba(0, 0, 0, .7);
+  display: grid; justify-items: center; align-content: center; gap: 4px; text-align: center;
+}
+.dv-ico { color: var(--c); transition: color .5s; }
+.dv-ico svg { width: 28px; height: 28px; }
+.dv-place { font: 500 11px var(--font-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--text-2); margin-top: 10px; }
+.dv-val { font-family: var(--font-display); font-weight: 300; font-stretch: 84%; font-size: clamp(3.6rem, 10vw, 6rem); line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--text); }
+.dv-val sup { font-family: var(--font-body); font-weight: 500; font-size: .2em; letter-spacing: 0; vertical-align: top; position: relative; top: .5em; margin-left: 6px; color: var(--text-2); }
+.dv-var { font-size: 13px; color: var(--text-2); }
+.dv-dots { display: flex; gap: 2px; margin-top: 12px; }
+.dv-dots button { width: 22px; height: 22px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; border-radius: 6px; }
+.dv-dots button::before { content: ""; width: 6px; height: 6px; border-radius: 99px; background: var(--text-3); transition: width .3s, background .3s; }
+.dv-dots button[aria-pressed="true"]::before { width: 16px; background: var(--c); }
+.dv-ring { position: absolute; bottom: 8%; left: 50%; width: 34px; height: 34px; margin-left: -17px; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, .22); }
+.scale { position: relative; z-index: 1; height: 230px; font: 12px var(--font-mono); color: var(--text-3); }
+.scale::before { content: ""; position: absolute; left: 56px; top: 0; bottom: 0; width: 1px; background: var(--border-strong); }
+.scale .tk { position: absolute; left: 50px; transform: translateY(-50%); padding-left: 20px; white-space: nowrap; }
+.scale .tk::before { content: ""; position: absolute; left: 0; top: 50%; width: 13px; height: 1px; background: var(--border-strong); }
+.scale .mk { position: absolute; left: 0; width: 56px; transform: translateY(-50%); padding-right: 14px; text-align: right; color: var(--c); font-weight: 500; transition: top .7s, color .5s; }
+.scale .mk i { position: absolute; right: -4.5px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 25%, transparent); }
+.dv-cap { grid-column: 1 / -1; text-align: center; font: 12px var(--font-mono); color: var(--text-3); position: relative; z-index: 1; margin-top: 10px; }
+@media (max-width: 520px) { .stage { grid-template-columns: 1fr; } .scale { display: none; } }
+
+/* ---------- Galería de nodos ---------- */
+.rail-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
+.rail-nav { display: flex; gap: 8px; }
+.rail-nav button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; display: grid; place-items: center; }
+.rail-nav button:hover { background: var(--text); color: var(--bg); }
+.rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+.ncard { scroll-snap-align: start; text-align: left; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 12px 12px 16px; cursor: pointer; display: grid; gap: 12px; transition: border-color .2s, transform .2s; }
+.ncard:hover { border-color: color-mix(in srgb, var(--c) 60%, var(--border)); transform: translateY(-2px); }
+.ncard[aria-pressed="true"] { border-color: var(--c); }
+.mini { aspect-ratio: 4 / 3; border-radius: 14px; display: grid; place-items: center; position: relative; overflow: hidden;
+  background-color: #141b27; background-image: radial-gradient(rgba(255, 255, 255, .07) .8px, transparent 1.1px); background-size: 4px 4px; }
+.mini::before { content: ""; position: absolute; inset: 20%; background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 30%, transparent), transparent); filter: blur(14px); }
+.mini-dev { position: relative; width: 46%; aspect-ratio: 1; border-radius: 28%; background: linear-gradient(150deg, #263043, #111824); box-shadow: 0 14px 24px -10px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .08); display: grid; place-items: center; align-content: center; gap: 2px; }
+.mini-dev .ic { color: var(--c); width: 18px; height: 18px; }
+.mini-dev b { font-family: var(--font-display); font-weight: 400; font-stretch: 85%; font-size: 1.35rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.mini-dev small { font-size: 10px; color: var(--text-2); }
+.ncard h3 { font-size: 1.05rem; padding: 0 4px; }
+.ncard p { font-size: 13px; color: var(--text-2); padding: 0 4px; line-height: 1.45; }
+.ncard .more { font-size: 13px; color: var(--c); padding: 0 4px; display: inline-flex; align-items: center; gap: 6px; }
 
 /* ---------- Secciones ---------- */
 .band { padding-block: 64px; border-bottom: 1px solid var(--border); }
 .band.alt { background: linear-gradient(180deg, var(--surface) 0, var(--bg) 340px); }
-.sec-head { display: grid; gap: 12px; margin-bottom: 28px; max-width: 760px; }
+.sec-head { display: grid; gap: 14px; margin-bottom: 32px; }
 .sub { margin-top: 48px; display: grid; gap: 18px; }
 .sub > * { min-width: 0; }
 .sub > header { display: grid; gap: 6px; }
-.sub > header p { color: var(--text-2); max-width: 68ch; }
+.sub > header p { color: var(--text-2); }
+.sub > header h2 { margin-block: 4px 6px; }
 .route-label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); width: max-content; }
 .route-label b { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 1px 8px; font-weight: 600; }
 
@@ -389,14 +458,15 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
   <div class="wrap">
     <a class="brand" href="#inicio">
       <span class="brand-mark"><svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></svg></span>
-      Orientación IoT <small>6to · 2026</small>
+      <span class="bt">Orientación IoT</span> <small>6to · 2026</small>
     </a>
     <nav aria-label="Secciones">
+      <a class="opt" href="#nodos">Nodos</a>
       <a href="#dashboard">Dashboard</a>
       <a href="#documentacion">Documentación</a>
       <a class="opt" href="#control">Control final</a>
-      <a class="opt" href="#referencias">Referencias</a>
     </nav>
+    <a class="top-cta" href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">Plantilla de la profe <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </div>
 </header>
 
@@ -405,27 +475,48 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="eyebrow"><b>Proyecto institucional</b> Smart Campus IoT · 6to año</p>
-        <h1 style="margin-top:14px">Del sensor al tablero,<br>y del tablero <em>a la carpeta.</em></h1>
-        <p class="lead">Esta guía tiene dos rutas. La primera muestra cómo diseñar el dashboard en tema oscuro del nodo que le tocó a tu equipo. La segunda explica cómo armar la documentación con la plantilla de la profe, partiendo de lo que ya tienen escrito.</p>
+        <p class="status-eyebrow"><span class="sig"></span><span>Smart Campus IoT · Proyecto institucional 6to año</span></p>
+        <h1 class="mega">Medir.<br>Mostrar.<br><span>Documentar.</span></h1>
+        <p class="lead">Guía de orientación para armar el dashboard en tema oscuro del nodo que le tocó a tu equipo y la documentación del proyecto con la plantilla de la profe, partiendo de lo que ya tienen.</p>
+        <div class="feats">
+          <a class="feat" href="#dashboard"><span class="fi" id="featA"></span><strong>Dashboard</strong><span>Un tablero en vivo por sensor, con semáforo e íconos.</span></a>
+          <a class="feat" href="#documentacion"><span class="fi" id="featB"></span><strong>Documentación</strong><span>Claude arma la web con la plantilla y sus documentos.</span></a>
+          <a class="feat" href="#control"><span class="fi" id="featC"></span><strong>Control final</strong><span>Listas de calidad antes de entregar y defender.</span></a>
+        </div>
+        <div class="hero-foot">
+          <span class="status-pill"><span class="sig"></span><b>EN LÍNEA</b>Campus: <em>7 nodos</em> transmitiendo</span>
+          <a class="go" href="#nodos"><span>Elegí tu nodo.<small>Del sensor a la carpeta.</small></span><span class="round"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+        </div>
       </div>
-      <div class="routes">
-        <a class="route" href="#dashboard">
-          <span class="ico" id="heroIcoA"></span>
-          <span><span class="tag">Ruta A</span><strong>Armar el dashboard</strong><span class="d">Demo en vivo por sensor, anatomía, paleta oscura, íconos y conexión MQTT.</span></span>
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-        <a class="route" href="#documentacion">
-          <span class="ico" id="heroIcoB"></span>
-          <span><span class="tag">Ruta B</span><strong>Armar la documentación</strong><span class="d">Si ya tienen documentos, Claude arma la web con la plantilla. Si no, el paso a paso.</span></span>
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
+      <div class="stage" id="stage">
+        <div class="device" role="group" aria-label="Nodo de ejemplo con lectura en vivo">
+          <div class="device-face">
+            <span class="dv-ico" id="dvIco"></span>
+            <span class="dv-place" id="dvPlace">Laboratorio</span>
+            <span class="dv-val" id="dvVal" aria-live="polite">13<sup>ppm</sup></span>
+            <span class="dv-var" id="dvVar">Monóxido de carbono</span>
+            <span class="dv-dots" id="dvDots"></span>
+            <span class="dv-ring" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="scale" id="dvScale" aria-hidden="true"></div>
+        <p class="dv-cap" id="dvCap">Nodo ESP32</p>
       </div>
     </div>
+  </section>
+
+  <!-- ======================= NODOS ======================= -->
+  <section class="band" id="nodos">
     <div class="wrap">
-      <div class="flow" aria-label="Recorrido del dato">
-        <span>Sensor</span><i>→</i><span>ESP32</span><i>→</i><span>WiFi</span><i>→</i><span>Broker MQTT</span><i>→</i><span>Backend / BD</span><i>→</i><span style="border-color:var(--accent);color:var(--accent)">Dashboard</span><i>→</i><span>Documentación</span>
+      <div class="sec-head">
+        <p class="eyebrow">Los nodos del campus</p>
+        <div class="rail-head">
+          <h2>Siete nodos, un mismo sistema</h2>
+          <div class="rail-nav"><button type="button" id="railPrev" aria-label="Nodos anteriores"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><button type="button" id="railNext" aria-label="Nodos siguientes"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+        </div>
+        <p class="lead">Todos comparten la misma base (ESP32, sensor DHT22 de temperatura y humedad, display LCD) y suman un sensor específico. Elegí el de tu equipo: el tablero de la Ruta A y los prompts se ajustan a ese nodo.</p>
       </div>
+      <div class="rail" id="rail"></div>
     </div>
   </section>
 
@@ -777,8 +868,9 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
   const svgIcon = (n, cls = "ic") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
   const rawSvg = n => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
 
-  $("#heroIcoA").innerHTML = svgIcon("grid", "ic-lg");
-  $("#heroIcoB").innerHTML = svgIcon("doc", "ic-lg");
+  $("#featA").innerHTML = svgIcon("grid", "ic");
+  $("#featB").innerHTML = svgIcon("doc", "ic");
+  $("#featC").innerHTML = svgIcon("ok", "ic");
 
   /* ------------------------------------------------------------ variables y nodos */
   const fmt = (v, d) => Number(v).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -1074,6 +1166,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
   function elegir(k) {
     actual = k; store.set("orient-nodo", k);
     cargarDatos(); renderPicker(); render();
+    if (typeof renderRail === "function") { heroK = k; renderHero(); renderRail(); }
     const sel = $("#fNodo"); if (sel && sel.value !== k) { sel.value = k; }
     renderPromptDoc();
   }
@@ -1406,8 +1499,66 @@ d) Los pasos para publicarlo en GitHub Pages.`;
     upd();
   });
 
+  /* ------------------------------------------------------------ hero: nodo de ejemplo + galería */
+  const ultimoValor = k => serie(NODOS[k], ORDEN.indexOf(k) * 97 + 13 + 3)[23];
+  const valorTxt = (k, v) => NODOS[k].tipo === "presencia" ? fmt(v, 0) : fmt(v, NODOS[k].dec);
+  let heroK = actual, heroFijo = false, heroPausa = false;
+  function renderHero() {
+    const n = NODOS[heroK], v = heroK === actual && datos.main ? datos.main[23] : ultimoValor(heroK);
+    $("#stage").style.setProperty("--c", n.color);
+    $("#dvIco").innerHTML = svgIcon(n.icon);
+    $("#dvPlace").textContent = n.lugar;
+    $("#dvVal").innerHTML = `${valorTxt(heroK, v)}<sup>${esc(n.unidad)}</sup>`;
+    $("#dvVar").textContent = n.variable;
+    $("#dvCap").textContent = `Nodo ESP32 · ${n.sensor} + DHT22`;
+    $("#dvDots").innerHTML = ORDEN.map(k => `<button type="button" data-hk="${k}" aria-label="${esc(NODOS[k].nombre)}" aria-pressed="${k === heroK}"></button>`).join("");
+    const pos = val => (1 - (val - n.min) / (n.max - n.min)) * 100;
+    const mid = (n.min + n.max) / 2;
+    $("#dvScale").innerHTML = [n.max, mid, n.min].map(t => `<span class="tk" style="top:${pos(t)}%">${fmt(t, 0)}</span>`).join("") +
+      `<span class="mk" style="top:${Math.min(100, Math.max(0, pos(v)))}%">${valorTxt(heroK, v)}<i></i></span>`;
+  }
+  $("#dvDots").addEventListener("click", e => {
+    const b = e.target.closest("[data-hk]"); if (!b) return;
+    heroFijo = true; heroK = b.dataset.hk; elegir(heroK);
+  });
+  $("#stage").addEventListener("mouseenter", () => { heroPausa = true; });
+  $("#stage").addEventListener("mouseleave", () => { heroPausa = false; });
+  if (!reduceMotion) setInterval(() => {
+    if (heroFijo || heroPausa || document.hidden) return;
+    heroK = ORDEN[(ORDEN.indexOf(heroK) + 1) % ORDEN.length]; renderHero();
+  }, 3800);
+
+  function renderRail() {
+    $("#rail").innerHTML = ORDEN.map(k => {
+      const n = NODOS[k], v = ultimoValor(k);
+      return `<button type="button" class="ncard" data-rk="${k}" aria-pressed="${k === actual}" style="--c:${n.color}">
+        <span class="mini"><span class="mini-dev">${svgIcon(n.icon)}<b>${valorTxt(k, v)}</b><small>${esc(n.unidad)}</small></span></span>
+        <h3>${esc(n.nombre)}</h3>
+        <p>${esc(n.sensor)} · ${esc(n.lugar)}</p>
+        <span class="more">Ver su tablero ${svgIcon("chart", "ic-sm")}</span>
+      </button>`;
+    }).join("");
+  }
+  $("#rail").addEventListener("click", e => {
+    const b = e.target.closest("[data-rk]"); if (!b) return;
+    elegir(b.dataset.rk);
+    $("#dashboard").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+  });
+  const railStep = () => Math.max(240, $("#rail").clientWidth * .8);
+  $("#railPrev").addEventListener("click", () => $("#rail").scrollBy({ left: -railStep(), behavior: reduceMotion ? "auto" : "smooth" }));
+  $("#railNext").addEventListener("click", () => $("#rail").scrollBy({ left: railStep(), behavior: reduceMotion ? "auto" : "smooth" }));
+
+  /* ------------------------------------------------------------ menú activo */
+  if ("IntersectionObserver" in window) {
+    const links = $$(".top nav a");
+    const io = new IntersectionObserver(es => es.forEach(en => {
+      if (en.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id));
+    }), { rootMargin: "-45% 0px -50% 0px" });
+    ["nodos", "dashboard", "documentacion", "control"].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+  }
+
   /* ------------------------------------------------------------ inicio */
-  cargarDatos(); renderPicker(); render(); renderPromptDoc();
+  cargarDatos(); renderPicker(); render(); renderPromptDoc(); renderHero(); renderRail();
 })();
 </script>
 </body>
