@@ -6,6 +6,8 @@
 <title>Tablero Central Smart Campus</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Maqueta de referencia de la landing del tablero central: todos los nodos del campus en tiempo real, equipos y acceso a cada dashboard.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Crect width="32" height="32" rx="8" fill="%23EC8494"/%3E%3Cg fill="none" stroke="%231A0C12" stroke-width="2.4" stroke-linecap="round"%3E%3Cpath d="M6 13.2a14 14 0 0 1 20 0"/%3E%3Cpath d="M9.5 17a9 9 0 0 1 13 0"/%3E%3Cpath d="M13 20.6a4.2 4.2 0 0 1 6 0"/%3E%3C/g%3E%3Ccircle cx="16" cy="24" r="1.7" fill="%231A0C12"/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0e15">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
@@ -365,8 +367,9 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
       serie: (h, r) => enClase(h) ? 22 + r() * 22 : (h === 21 ? 4 : 0) },
     luz3:      { equipo: 3, base: "luz", nombre: "Luminosidad", sector: "Lab. de Informática 3", corto: "Info 3 · luz", slug: "lab-info-3", sensor: "BH1750", variable: "Luz", unidad: "lx", icon: "luz", color: "var(--c-luz)", hex: "#fde68a", min: 0, max: 1000, dec: 0, tipo: "rango", u: { n: [300, 750], a: [150, 900] }, x: 600, y: 92, piso: 1, tOff: .6,
       serie: (h, r) => (enClase(h) ? 420 + r() * 60 : 0) + Math.max(0, 60 * Math.sin((h - 6) * Math.PI / 13)) + (h === 21 ? 380 : 0) },
-    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Lab. de Informática 3", corto: "Info 3 · consumo", slug: "lab-info-3", piso: 1, sensor: "SCT-013", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 3000, dec: 0, tipo: "max", u: { a: 1500, b: 2500 }, x: 700, y: 92, tOff: 3.4, offline: true,
-      serie: (h, r) => 160 + (enClase(h) ? 1100 + r() * 300 : r() * 40) + 1250 * bump(h, 14, .5) },
+    consumo:   { equipo: 4, nombre: "Consumo eléctrico", sector: "Lab. de Informática 3", corto: "Info 3 · consumo", slug: "lab-info-3", piso: 1, sensor: "SCT-013 · 18 PC, proyector y 4 luces", variable: "Potencia", unidad: "W", icon: "consumo", color: "var(--c-consumo)", hex: "#818cf8", min: 0, max: 4500, dec: 0, tipo: "max", u: { a: 3000, b: 3600 }, x: 700, y: 92, tOff: 3.4,
+      // 18 PC (~110 W c/u en uso, ~5 W en reposo) + proyector (~250 W) + 4 luces LED de techo (~40 W c/u)
+      serie: (h, r) => enClase(h) ? 18 * (95 + r() * 30) + 160 + (h >= 10 && h < 16 ? 250 : 0) + 900 * bump(h, 14, .45) : 18 * 5 + 30 + (h === 21 ? 160 : 0) + r() * 15 },
     ruido:     { equipo: 5, nombre: "Nivel sonoro", sector: "Hall central", corto: "Hall central", slug: "hall-central", sensor: "KY-037", variable: "Ruido", unidad: "dB", icon: "ruido", color: "var(--c-ruido)", hex: "#c084fc", min: 30, max: 90, dec: 0, tipo: "max", u: { a: 55, b: 70 }, x: 395, y: 212, piso: 0, tOff: -.8,
       serie: (h, r) => 36 + (enClase(h) ? 14 : 0) + 22 * bump(h, 10, .35) + 20 * bump(h, 12.5, .4) + 18 * bump(h, 15, .35) + r() * 4 },
     suelo:     { equipo: 6, nombre: "Humedad de suelo", sector: "Patio / huerta", corto: "Huerta", slug: "huerta", sensor: "Capacitivo v1.2", variable: "Suelo", unidad: "%", icon: "suelo", color: "var(--c-suelo)", hex: "#d4a373", min: 0, max: 100, dec: 0, tipo: "rango", u: { n: [40, 70], a: [25, 85] }, x: 865, y: 222, piso: 0, tOff: -3.5, exterior: true,
@@ -555,7 +558,8 @@ client.on(<span class="s">"message"</span>, (topic, msg) =&gt; {
     addAlert("ok", "ruido", "Ruido normalizado", "volvió a menos de 55 dB", at(52));
     addAlert("warn", "red", "Latencia alta", "92 ms al servidor", at(38));
     addAlert("ok", "red", "Latencia normalizada", "21 ms al servidor", at(31));
-    addAlert("off", "consumo", "Nodo desconectado", "sin datos hace más de 5 min", at(2));
+    addAlert("off", "consumo", "Nodo desconectado", "sin datos hace más de 5 min", at(64));
+    addAlert("ok", "consumo", "Nodo reconectado", "volvió a publicar", at(57));
     ORDEN.forEach(k => { const l = nivelDe(k); if (l > 0) addAlert(NIVEL[l].k, k, `${NODOS[k].variable} ${valTxt(k)} ${NODOS[k].unidad}`, textoEstado(NODOS[k], l, val(k)), at(1)); });
   })();
 

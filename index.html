@@ -6,6 +6,8 @@
 <title>Orientación Proyecto IoT</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Guía para 6to año: cómo diseñar el dashboard en tema oscuro de cada nodo IoT y cómo armar la documentación del proyecto con la plantilla de la profe.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Crect width="32" height="32" rx="8" fill="%23EC8494"/%3E%3Cg fill="none" stroke="%231A0C12" stroke-width="2.4" stroke-linecap="round"%3E%3Cpath d="M6 13.2a14 14 0 0 1 20 0"/%3E%3Cpath d="M9.5 17a9 9 0 0 1 13 0"/%3E%3Cpath d="M13 20.6a4.2 4.2 0 0 1 6 0"/%3E%3C/g%3E%3Ccircle cx="16" cy="24" r="1.7" fill="%231A0C12"/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0e15">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,300..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
@@ -91,6 +93,7 @@ code { overflow-wrap: anywhere; font-size: .88em; background: var(--surface-2); 
 .top nav { justify-self: center; min-width: 0; max-width: 100%; display: flex; gap: 2px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow-x: auto; scrollbar-width: none; }
 .top nav a { color: var(--text-2); text-decoration: none; font-size: 13.5px; padding: 6px 14px; border-radius: 999px; white-space: nowrap; transition: background .15s, color .15s; }
 .top nav a:hover, .top nav a.on { color: var(--text); background: var(--surface-3); }
+@media (min-width: 901px) { .top .wrap { position: relative; } .top nav { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); } }
 @media (max-width: 900px) { .top .wrap { grid-template-columns: auto minmax(0, 1fr); } .top nav { justify-self: end; } .brand small { display: none; } }
 @media (max-width: 560px) { .brand .bt { display: none; } .top nav a.opt { display: none; } .top nav a { padding: 6px 11px; } }
 
@@ -182,7 +185,12 @@ h1.mega span { color: var(--text-3); }
 .rail-nav { display: flex; gap: 8px; }
 .rail-nav button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; display: grid; place-items: center; }
 .rail-nav button:hover { background: var(--text); color: var(--bg); }
-.rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+.rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-x pan-y; }
+.rail::-webkit-scrollbar { display: none; }
+.rail.drag { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; }
+.rail.drag .ncard { pointer-events: none; }
+.rail .ncard img, .rail .ncard svg { -webkit-user-drag: none; }
+.rail-nav button:disabled { opacity: .35; cursor: default; background: var(--surface); color: var(--text); }
 .ncard { scroll-snap-align: start; text-align: left; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 12px 12px 16px; cursor: pointer; display: grid; gap: 12px; transition: border-color .2s, transform .2s; }
 .ncard:hover { border-color: color-mix(in srgb, var(--c) 60%, var(--border)); transform: translateY(-2px); }
 .ncard[aria-pressed="true"] { border-color: var(--c); }
@@ -1700,6 +1708,32 @@ d) Los pasos para publicarlo en GitHub Pages.`;
   $("#railPrev").addEventListener("click", () => $("#rail").scrollBy({ left: -railStep(), behavior: reduceMotion ? "auto" : "smooth" }));
   $("#railNext").addEventListener("click", () => $("#rail").scrollBy({ left: railStep(), behavior: reduceMotion ? "auto" : "smooth" }));
 
+
+  /* arrastre con el mouse: botón izquierdo o rueda (clic sostenido) */
+  (() => {
+    const rail = $("#rail"); let down = null, moved = false;
+    rail.addEventListener("mousedown", e => {
+      if (e.button !== 0 && e.button !== 1) return;
+      if (e.button === 1) e.preventDefault(); // evita el autoscroll nativo y usa el arrastre
+      down = { x: e.clientX, left: rail.scrollLeft }; moved = false;
+    });
+    window.addEventListener("mousemove", e => {
+      if (!down) return;
+      const dx = e.clientX - down.x;
+      if (!moved && Math.abs(dx) > 4) { moved = true; rail.classList.add("drag"); }
+      if (moved) { rail.scrollLeft = down.left - dx; e.preventDefault(); }
+    });
+    window.addEventListener("mouseup", () => {
+      if (!down) return;
+      down = null;
+      if (moved) { rail.classList.remove("drag"); const c = rail.querySelector(".ncard"); if (c) { const step = c.offsetWidth + 14; rail.scrollTo({ left: Math.round(rail.scrollLeft / step) * step }); } }
+    });
+    rail.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+    rail.addEventListener("auxclick", e => { if (e.button === 1) e.preventDefault(); });
+    // inclinación lateral de la rueda (deltaX) y Shift + rueda funcionan de forma nativa
+    const upd = () => { $("#railPrev").disabled = rail.scrollLeft < 4; $("#railNext").disabled = rail.scrollLeft + rail.clientWidth > rail.scrollWidth - 4; };
+    rail.addEventListener("scroll", upd, { passive: true }); window.addEventListener("resize", upd); setTimeout(upd, 50);
+  })();
   /* ------------------------------------------------------------ menú activo */
   if ("IntersectionObserver" in window) {
     const links = $$(".top nav a");
