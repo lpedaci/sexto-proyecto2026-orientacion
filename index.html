@@ -111,7 +111,7 @@ p { margin: 0; }
 .prose ul, .prose ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 
 /* ---------- Hero: el nodo como producto ---------- */
-.hero { position: relative; padding-block: 56px 72px; border-bottom: 1px solid var(--border); overflow: hidden; }
+.hero { position: relative; padding-block: 56px 48px; border-bottom: 1px solid var(--border); overflow: hidden; }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; }
 @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
 .status-eyebrow { font: 500 12px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 10px; }
@@ -131,16 +131,20 @@ h1.mega span { color: var(--text-3); }
   .feat { border-left: 0; padding: 0; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; }
   .feat .fi { grid-row: span 2; margin: 2px 0 0; }
 }
-.hero-foot { margin-top: 44px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; }
+.hero-foot { margin-top: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
 .status-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px; border: 1px solid var(--border-strong); border-radius: 999px; font-size: 13.5px; color: var(--text-2); background: var(--surface); }
 .status-pill b { font: 500 11.5px var(--font-mono); letter-spacing: .14em; color: var(--text); }
 .status-pill em { font-style: normal; color: var(--ok); }
-.go { display: flex; align-items: center; gap: 16px; text-decoration: none; color: var(--text); }
-.go > span { font-size: 14.5px; line-height: 1.35; text-align: right; font-weight: 600; }
-.go > span small { display: block; color: var(--text-2); font-size: 14px; font-weight: 400; }
-.round { width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--border-strong); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s, transform .2s, color .2s; }
-.go:hover { color: var(--text); }
-.go:hover .round { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); transform: translateX(3px); }
+.hero-cta { margin: 56px auto 0; display: grid; justify-items: center; gap: 12px; width: max-content; max-width: 100%; text-decoration: none; color: var(--text); text-align: center; position: relative; }
+.hero-cta::before, .hero-cta::after { content: ""; position: absolute; top: 30px; width: min(28vw, 320px); height: 1px; }
+.hero-cta::before { right: calc(100% + 24px); background: linear-gradient(90deg, transparent, var(--border-strong)); }
+.hero-cta::after { left: calc(100% + 24px); background: linear-gradient(90deg, var(--border-strong), transparent); }
+.hero-cta .lbl { font-size: 15px; font-weight: 600; line-height: 1.35; }
+.hero-cta .lbl small { display: block; font-size: 13.5px; font-weight: 400; color: var(--text-2); }
+.round { width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--border-strong); background: var(--surface); display: grid; place-items: center; flex: none; transition: background .2s, border-color .2s, transform .2s, color .2s; }
+.hero-cta:hover { color: var(--text); }
+.hero-cta:hover .round { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); transform: translateY(3px); }
+@media (prefers-reduced-motion: no-preference) { .hero-cta .round { animation: nudge 2.6s ease-in-out infinite; } @keyframes nudge { 0%, 70%, 100% { transform: none; } 80% { transform: translateY(4px); } 90% { transform: translateY(0); } } }
 
 .stage { --c: var(--c-aire); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 112px; align-items: center; gap: 12px; }
 .stage::before { content: ""; position: absolute; inset: 4% 22% 4% 0; background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 24%, transparent), transparent); filter: blur(34px); z-index: 0; transition: background .7s; }
@@ -318,6 +322,37 @@ h1.mega span { color: var(--text-3); }
 .anat-list strong { font-size: 15px; }
 .anat-list span { font-size: 14px; color: var(--text-2); }
 
+
+/* ---------- Tablero general (vista previa) ---------- */
+:root { --off-c: #6c7890; }
+.tg { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 960px) { .tg { grid-template-columns: 1fr; } }
+.tg-prev { display: grid; text-decoration: none; color: var(--text); border: 1px solid var(--border-strong); border-radius: 18px; background: #080b11; padding: 10px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.7); transition: border-color .2s, transform .2s; }
+.tg-prev:hover { border-color: var(--accent); transform: translateY(-2px); color: var(--text); }
+.tg-bar { display: flex; align-items: center; gap: 6px; padding: 2px 6px 10px; font: 12px var(--font-mono); color: var(--text-3); }
+.tg-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong); }
+.tg-bar span { margin-left: 8px; }
+.tg-body { display: grid; gap: 10px; padding: 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); }
+.tg-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.tg-kpis i { height: 44px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); }
+.tg-kpis i:first-child { background: linear-gradient(135deg, var(--ok-soft), var(--surface)); }
+.tg-kpis i:nth-child(2) { background: linear-gradient(135deg, var(--bad-soft), var(--surface)); }
+.tg-row { display: grid; grid-template-columns: 1.7fr 1fr; gap: 8px; }
+.tg-map { position: relative; height: 150px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border);
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 25% 34%, 25% 34%; }
+.tg-map .dt { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--bg); border: 2.5px solid var(--d); box-shadow: 0 0 0 5px color-mix(in srgb, var(--d) 18%, transparent); }
+.tg-list { display: grid; gap: 6px; align-content: start; padding: 8px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); }
+.tg-list i { height: 18px; border-radius: 5px; background: linear-gradient(90deg, var(--d) 0 4px, var(--surface-2) 4px); }
+.tg-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tg-cards i { height: 64px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); position: relative; overflow: hidden; }
+.tg-cards i::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: 12px; height: 16px; background: linear-gradient(180deg, color-mix(in srgb, var(--d) 35%, transparent), transparent); border-top: 2px solid var(--d); border-radius: 2px; }
+.tg-open { justify-self: center; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 13.5px; color: var(--accent); }
+.tg-side { display: grid; gap: 16px; align-content: start; }
+.tg-side h3 { font-size: 1.25rem; }
+.tg-list-req { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; color: var(--text-2); font-size: 14.5px; }
+.tg-list-req b { color: var(--text); font-weight: 600; }
+.tg-list-req li::marker { color: var(--accent); font-family: var(--font-mono); }
+
 /* ---------- Tablas ---------- */
 .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -464,6 +499,7 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
       <a class="opt" href="#nodos">Nodos</a>
       <a href="#dashboard">Dashboard</a>
       <a href="#documentacion">Documentación</a>
+      <a href="tablero-general.html">Tablero general</a>
       <a class="opt" href="#control">Control final</a>
     </nav>
     <a class="top-cta" href="https://lpedaci.github.io/sexto-proyecto2026/" target="_blank" rel="noopener">Plantilla de la profe <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
@@ -485,7 +521,6 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
         </div>
         <div class="hero-foot">
           <span class="status-pill"><span class="sig"></span><b>EN LÍNEA</b>Campus: <em>7 nodos</em> transmitiendo</span>
-          <a class="go" href="#nodos"><span>Elegí tu nodo.<small>Del sensor a la carpeta.</small></span><span class="round"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
         </div>
       </div>
       <div class="stage" id="stage">
@@ -502,6 +537,9 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
         <div class="scale" id="dvScale" aria-hidden="true"></div>
         <p class="dv-cap" id="dvCap">Nodo ESP32</p>
       </div>
+    </div>
+    <div class="wrap">
+      <a class="hero-cta" href="#nodos"><span class="round"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span><span class="lbl">Elegí tu nodo<small>Del sensor a la carpeta</small></span></a>
     </div>
   </section>
 
@@ -671,6 +709,50 @@ footer.site .wrap { overflow-wrap: anywhere; display: flex; flex-wrap: wrap; jus
         <div class="prompt-box">
           <div class="code-head"><span>Prompt para el dashboard</span><span style="display:flex;gap:10px;align-items:center"><span class="toast" id="toastDash" role="status"></span><button class="btn sm primary" id="copyDash" type="button">Copiar prompt</button></span></div>
           <textarea id="promptDash" spellcheck="false" aria-label="Prompt para el dashboard"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= TABLERO GENERAL ======================= -->
+  <section class="band" id="tablero-general">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="route-label"><b>A+</b> Tablero central · Módulo 4</span>
+        <h2>La landing que reúne a todos los nodos</h2>
+        <p class="lead">Además del dashboard de cada equipo, el proyecto tiene un tablero central institucional: la página de entrada donde se ven los siete nodos juntos y en tiempo real, con el estado de cada sector, las alertas, los equipos y el acceso a cada dashboard. Armamos una maqueta de referencia completa, en una web aparte, para que vean cómo tiene que quedar.</p>
+      </div>
+      <div class="tg">
+        <a class="tg-prev" href="tablero-general.html" aria-label="Abrir la maqueta del tablero general">
+          <span class="tg-bar"><i></i><i></i><i></i><span>tablero-general.html</span></span>
+          <span class="tg-body">
+            <span class="tg-kpis"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="tg-row">
+              <span class="tg-map">
+                <span class="dt" style="left:14%;top:22%;--d:var(--ok)"></span><span class="dt" style="left:37%;top:22%;--d:var(--ok)"></span>
+                <span class="dt" style="left:61%;top:22%;--d:var(--warn)"></span><span class="dt" style="left:86%;top:22%;--d:var(--off-c)"></span>
+                <span class="dt" style="left:37%;top:46%;--d:var(--ok)"></span><span class="dt" style="left:26%;top:78%;--d:var(--bad)"></span>
+                <span class="dt" style="left:58%;top:76%;--d:var(--ok)"></span>
+              </span>
+              <span class="tg-list"><i style="--d:var(--bad)"></i><i style="--d:var(--warn)"></i><i style="--d:var(--off-c)"></i><i style="--d:var(--ok)"></i><i style="--d:var(--ok)"></i></span>
+            </span>
+            <span class="tg-cards"><i style="--d:var(--c-aire)"></i><i style="--d:var(--c-luz)"></i><i style="--d:var(--c-presencia)"></i><i style="--d:var(--c-consumo)"></i></span>
+          </span>
+          <span class="tg-open">Abrir la maqueta <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+        </a>
+        <div class="tg-side">
+          <h3>Qué tiene que tener, en este orden</h3>
+          <ol class="tg-list-req">
+            <li><b>Resumen del campus.</b> Nodos en línea, alertas activas, promedios y mensajes por minuto.</li>
+            <li><b>Mapa de la escuela.</b> Cada nodo en su sector, coloreado por estado y unido al servidor.</li>
+            <li><b>Semáforo por sector.</b> Ordenado de peor a mejor, con palabra e ícono.</li>
+            <li><b>Tarjetas de nodo.</b> Valor, tendencia, hace cuánto llegó el dato y botón al dashboard del equipo.</li>
+            <li><b>Comparación en el tiempo.</b> Mapa de calor de 7 sectores × 24 horas.</li>
+            <li><b>Alertas en vivo.</b> Lo más nuevo arriba, incluidas las que se resuelven.</li>
+            <li><b>Equipos y accesos.</b> Dashboard, documentación y código de cada equipo.</li>
+          </ol>
+          <p class="muted" style="font-size:14px">Recibe a todos los nodos con una sola suscripción MQTT con comodines: <code>campus/+/+/telemetria</code>. Lo arma el Laboratorio de Aplicaciones con los enlaces que cada equipo carga en su <code>datos.js</code>.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn primary" href="tablero-general.html">Abrir el tablero general <svg class="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div>
         </div>
       </div>
     </div>
